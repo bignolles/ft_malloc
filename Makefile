@@ -8,7 +8,7 @@ INCLUDES_DIR =	./includes/
 OBJ_DIR =		./obj/
 LIBFT_DIR =		./libft/
 LIBFT_NAME =	libft.a
-SRCS =			malloc.c
+SRCS =			metadata.c
 OBJ =			$(SRCS:.c=.o)
 LIBFT =			$(LIBFT_DIR)libft.a
 CC =			clang
