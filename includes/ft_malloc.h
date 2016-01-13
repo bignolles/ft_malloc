@@ -1,8 +1,14 @@
 #ifndef FT_MALLOC_H
 # define FT_MALLOC_H
 
-# define M_OK		0x00
-# define M_NOK		0x01
+# define M_OK				0x00
+# define M_NOK				0x01
+
+# define TINY				0
+# define SMALL				1
+
+# define MMAP_PROT			PROT_READ | PROT_WRITE
+# define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
 
 # define TINY_PAGES_NB		512
 # define SMALL_PAGES_NB		4096
@@ -23,14 +29,14 @@
 
 // TODO: Ajouter une variable global metadata_t malloc_meta_g dans le fichier qui contiendra la definition de la fonction malloc(size_t size)
 
-typedef enum		blocksize_s
+typedef enum	blocksize_s
 {
 	TINY,
 	SMALL,
 	LARGE,
-}					blocksize_t;
+}				blocksize_t;
 
-typedef struct		metadata_s
+typedef struct	metadata_s
 {
 	void*		data_tiny;
 	void*		data_tiny_end;
@@ -41,13 +47,15 @@ typedef struct		metadata_s
 	void*		meta_small;
 	void*		meta_small_end;
 	void*		meta_large; // On a meme pas besoin de tenir des metadata sur les larges /!
-}					metadata_t; // <- globale
+	void		*meta_pages_start[2];
+	void		*meta_pages_end[2];
+}				metadata_t; // <- globale
 
-int					datapages_init();	// <- initialise metadata_t
-int					create_meta();		// |
-int					create_data();		// |
-void*				metadata_retrieve(void* usr_ptr);
-int					metadata_add(void* usr_ptr, blocksize_t size);
-int					metadata_remove(void* usr_ptr, blocksize_t size);
+int				datapages_init();	// <- initialise metadata_t
+int				create_meta();		// |
+int				create_data();		// |
+void*			metadata_retrieve(void* usr_ptr);
+int				metadata_add(void* usr_ptr, blocksize_t size);
+int				metadata_remove(void* usr_ptr, blocksize_t size);
 
 #endif

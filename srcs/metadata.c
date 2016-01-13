@@ -14,23 +14,30 @@
 #include <unistd.h>
 #include <stdint.h>
 #include "libft.h"
-#include "ft_malloc.h"
+#include <ft_malloc.h>
 
 extern metadata_t	malloc_data_g;
 
 int					metadata_init(void)
 {
+	int		page_size;
+
 	/**
 	 * \fn int metadata_init(void)
 	 * \brief cree les pages de metadata 'tiny' et 'small', et memset leurs valeur a 0
 	 * \return M_OK si tout c'est bien passe, M_NOK si mmap echoue
 	 */
-	malloc_data_g.meta_tiny = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-	malloc_data_g.meta_small = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+	page_size = getpagesize();
+	malloc_data_g.meta_tiny = mmap(NULL, page_size, MMAP_PROT, MMAP_FLAGS, -1, 0);
+	malloc_data_g.meta_small = mmap(NULL, page_size, MMAP_PROT, MMAP_FLAGS, -1, 0);
 	if  (malloc_data_g.meta_tiny != MAP_FAILED && malloc_data_g.meta_small != MAP_FAILED)
 	{
-		ft_memset(malloc_data_g.meta_tiny, 0, getpagesize());
-		ft_memset(malloc_data_g.meta_small, 0, getpagesize());
+		ft_bzero(malloc_data_g.meta_tiny, page_size);
+		ft_bzero(malloc_data_g.meta_small, page_size);
+		meta_pages_start[TINY] = malloc_data_g.meta_tiny;
+		meta_pages_end[TINY] = malloc_data_g.meta_tiny + page_size - sizeof(void *);
+		meta_pages_start[SMALL] = malloc_data_g.meta_small;
+		meta_pages_end[SMALL] = malloc_data_g.meta_small + page_size - sizeof(void *);
 		return (M_OK);
 	}
 	else
@@ -46,25 +53,21 @@ void*				metadata_retrieve(void* usr_ptr)
 	return (NULL);
 }
 
-static void*		get_metapage(blocksize_t size)
+int					metadata_add(void *usr_ptr, blocksize_t size)
 {
-	if (size == TINY)
-		return (malloc_meta_g.meta_tiny);
-	else if (size == SMALL)
-		return (malloc_meta_g.meta_small);
-	else if (size == LARGE)
-		return (malloc_meta_g.meta_large);
-}
+	void		*it;
+	void		*end;
 
-int					metadata_add(void* meta_ptr, blocksize_t size)
-{
-	void		*meta_iterator;
-	intptr_t	i;
-
-	meta_iterator = get_metapage(size);
-	i = 0;
-	while (i < getpagesize() - sizeof())
+	it = malloc_meta_g.meta_pages_start[size];
+	end = malloc_meta_g.meta_pages_end[size];
+	while (it != end)
 	{
-		if ()
+		if (!it)
+		{
+			it = usr_ptr;
+			return (1);
+		}
+		it += sizeof(void *);
 	}
+	return (0);
 }
