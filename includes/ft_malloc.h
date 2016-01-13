@@ -4,6 +4,9 @@
 # define M_OK		0x00
 # define M_NOK		0x01
 
+# define TINY_PAGES_NB		512
+# define SMALL_PAGES_NB		4096
+
 /**
  * \struct metadata_s
  * \brief Structure permettant le stockage des metadonnees relatives aux blocs de
