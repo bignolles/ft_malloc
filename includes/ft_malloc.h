@@ -33,9 +33,13 @@ typedef enum		blocksize_s
 typedef struct		metadata_s
 {
 	void*		data_tiny;
+	void*		data_tiny_end;
 	void*		data_small;
+	void*		data_small_end;
 	void*		meta_tiny;
+	void*		meta_tiny_end;
 	void*		meta_small;
+	void*		meta_small_end;
 	void*		meta_large; // On a meme pas besoin de tenir des metadata sur les larges /!
 }					metadata_t; // <- globale
 
