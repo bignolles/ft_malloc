@@ -1,11 +1,10 @@
 #ifndef FT_MALLOC_H
 # define FT_MALLOC_H
 
+# include <stdint.h>
+
 # define M_OK				0x00
 # define M_NOK				0x01
-
-# define TINY				0
-# define SMALL				1
 
 # define MMAP_PROT			PROT_READ | PROT_WRITE
 # define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE

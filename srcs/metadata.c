@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   metadata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/13 11:00:58 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/13 14:13:50 by ndatin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/mman.h>
 #include <unistd.h>
 #include <stdint.h>
-#include "libft.h"
+#include <libft.h>
 #include <ft_malloc.h>
 
 extern metadata_t	malloc_data_g;
@@ -34,10 +34,10 @@ int					metadata_init(void)
 	{
 		ft_bzero(malloc_data_g.meta_tiny, page_size);
 		ft_bzero(malloc_data_g.meta_small, page_size);
-		meta_pages_start[TINY] = malloc_data_g.meta_tiny;
-		meta_pages_end[TINY] = malloc_data_g.meta_tiny + page_size - sizeof(void *);
-		meta_pages_start[SMALL] = malloc_data_g.meta_small;
-		meta_pages_end[SMALL] = malloc_data_g.meta_small + page_size - sizeof(void *);
+		malloc_data_g.meta_pages_start[TINY] = malloc_data_g.meta_tiny;
+		malloc_data_g.meta_pages_end[TINY] = malloc_data_g.meta_tiny + page_size - sizeof(void *);
+		malloc_data_g.meta_pages_start[SMALL] = malloc_data_g.meta_small;
+		malloc_data_g.meta_pages_end[SMALL] = malloc_data_g.meta_small + page_size - sizeof(void *);
 		return (M_OK);
 	}
 	else
@@ -55,19 +55,37 @@ void*				metadata_retrieve(void* usr_ptr)
 
 int					metadata_add(void *usr_ptr, blocksize_t size)
 {
-	void		*it;
-	void		*end;
+	intptr_t	it;
+	intptr_t	end;
 
-	it = malloc_meta_g.meta_pages_start[size];
-	end = malloc_meta_g.meta_pages_end[size];
+	it = (intptr_t)malloc_data_g.meta_pages_start[size];
+	end = (intptr_t)malloc_data_g.meta_pages_end[size];
 	while (it != end)
 	{
 		if (!it)
 		{
-			it = usr_ptr;
+			it = (intptr_t)usr_ptr;
 			return (1);
 		}
-		it += sizeof(void *);
+		it++;
+	}
+	return (0);
+}
+
+int					metadata_remove(void *usr_ptr, blocksize_t size)
+{
+	intptr_t	it;
+	intptr_t	end;
+
+	it = (intptr_t)malloc_data_g.meta_pages_start[size];
+	end = (intptr_t)malloc_data_g.meta_pages_end[size];
+	if ((intptr_t)usr_ptr < it || (intptr_t)usr_ptr > end)
+		return (0);
+	while (it != end)
+	{
+		if (it == (intptr_t)usr_ptr)
+			it = 0;
+		it++;
 	}
 	return (0);
 }
