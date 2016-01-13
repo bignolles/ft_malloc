@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/13 18:29:39 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/13 18:35:12 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,15 @@
 #include <libft.h>
 #include <ft_malloc.h>
 
-metadata_t		malloc_data_g;
+metadata_t		malloc_data_g; // <- TODO declarer en 'extern', et la declarer 'pour de vrai' dans le fichier qui contiendra la definition de malloc!
 
 static size_t		get_metapagesize(blocksize_t size)
 {
+	/**
+	 * \fn static size_t get_metapagesize(blocksize_t size)
+	 * \param size page de metadata concernee ('tiny' ou 'small')
+	 * \return la taille en byte (octets) de la page de metadata passee en parametre
+	 */
 	size_t		pagesize;
 
 	pagesize = 0;
