@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/13 18:23:04 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/13 18:29:39 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,11 @@
 #include <libft.h>
 #include <ft_malloc.h>
 
-extern metadata_t	malloc_data_g;
+metadata_t		malloc_data_g;
 
 static size_t		get_metapagesize(blocksize_t size)
 {
 	size_t		pagesize;
-	size_t		page_nb;
-	size_t		atomic;
 
 	pagesize = 0;
 	if (size == TINY)
@@ -46,7 +44,6 @@ int					metadata_init(void)
 	 * \brief cree les pages de metadata 'tiny' et 'small', et memset leurs valeur a 0
 	 * \return M_OK si tout c'est bien passe, M_NOK si mmap echoue
 	 */
-	page_size = getpagesize();
 	pagesize_tiny = get_metapagesize(TINY);
 	pagesize_small = get_metapagesize(SMALL);
 	malloc_data_g.meta_tiny = mmap(NULL, pagesize_tiny, MMAP_PROT, MMAP_FLAGS, -1, 0);
