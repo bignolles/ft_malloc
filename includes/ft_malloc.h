@@ -12,6 +12,9 @@
 # define TINY_PAGES_NB		512
 # define SMALL_PAGES_NB		4096
 
+# define TINY_ATOMIC		16
+# define SMALL_ATOMIC		997 // <- Bidouiller le nombre de pages / les atomic pour que ces derniers soient des puissance de deux (je pense que ce sera plus propre)
+
 /**
  * \struct metadata_s
  * \brief Structure permettant le stockage des metadonnees relatives aux blocs de
