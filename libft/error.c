@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <libft.h>
-#include <ft_error.h>
 
 int		tryint(int err, int res, char *error)
 {
