@@ -6,11 +6,13 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/14 10:47:16 by marene            #+#    #+#             */
-/*   Updated: 2016/01/14 11:23:26 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/14 12:36:34 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "libft.h"
 #include "unit_tests.h"
 #include "ft_malloc.h"
@@ -34,5 +36,6 @@ static void		launch_unit(char* test_name)
 
 int				main(void)
 {
+	srand(time(NULL));
 	launch_unit(TEST_METADATA);
 }

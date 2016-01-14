@@ -33,7 +33,7 @@
 
 typedef enum	blocksize_s
 {
-	TINY,
+	TINY = 0,
 	SMALL,
 	LARGE,
 }				blocksize_t;
@@ -53,9 +53,11 @@ typedef struct	metadata_s
 	void		*meta_pages_end[2];
 }				metadata_t; // <- globale
 
-int				datapages_init();	// <- initialise metadata_t
-int				create_meta();		// |
-int				create_data();		// |
+int				datapages_init(void);	// <- initialise metadata_t
+int				create_meta(void);		// |
+int				create_data(void);		// |
+int				metadata_init(void);
+size_t			get_metapagesize(blocksize_t size);
 void*			metadata_retrieve(void* usr_ptr);
 int				metadata_add(void* usr_ptr, blocksize_t size);
 int				metadata_remove(void* usr_ptr, blocksize_t size);
