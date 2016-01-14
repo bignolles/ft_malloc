@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/14 10:47:16 by marene            #+#    #+#             */
-/*   Updated: 2016/01/14 12:36:34 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/14 17:04:05 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ static void		launch_unit(char* test_name)
 {
 	char*	errmsg;
 
-	printf("%s: ", test_name);
+	ft_putstr(test_name);
+	ft_putstr(": ");
 	if (ft_strcmp(test_name, TEST_METADATA) == 0)
 	{
 		tryint(UNIT_NOK, unit_metadata(&errmsg), errmsg);

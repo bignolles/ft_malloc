@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/13 18:35:12 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/14 17:03:21 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 metadata_t		malloc_data_g; // <- TODO declarer en 'extern', et la declarer 'pour de vrai' dans le fichier qui contiendra la definition de malloc!
 
-static size_t		get_metapagesize(blocksize_t size)
+size_t				get_metapagesize(blocksize_t size)
 {
 	/**
 	 * \fn static size_t get_metapagesize(blocksize_t size)
@@ -76,8 +76,8 @@ void*				metadata_retrieve(void* usr_ptr)
 	void*		meta_ptr;
 
 	meta_ptr = usr_ptr - sizeof(intptr_t);
-	if ((meta_ptr >= malloc_data_g.data_tiny && meta_ptr <= malloc_data_g.data_tiny_end)
-			|| (meta_ptr >= malloc_data_g.data_small && meta_ptr <= malloc_data_g.data_small_end))
+	if (usr_ptr != NULL && ((meta_ptr >= malloc_data_g.data_tiny && meta_ptr <= malloc_data_g.data_tiny_end)
+			|| (meta_ptr >= malloc_data_g.data_small && meta_ptr <= malloc_data_g.data_small_end)))
 	{
 		return (meta_ptr);
 	}
@@ -99,27 +99,26 @@ int					metadata_add(void *usr_ptr, blocksize_t size)
 		if (!it)
 		{
 			it = (intptr_t)usr_ptr;
-			return (1);
+			return (M_OK);
 		}
 		it++;
 	}
-	return (0);
+	return (M_NOK);
 }
 
 int					metadata_remove(void *usr_ptr, blocksize_t size)
 {
 	intptr_t	it;
-	intptr_t	end;
 
-	it = (intptr_t)malloc_data_g.meta_pages_start[size];
-	end = (intptr_t)malloc_data_g.meta_pages_end[size];
-	if ((intptr_t)usr_ptr < it || (intptr_t)usr_ptr > end)
-		return (0);
-	while (it != end)
+	it = 0;
+	while (malloc_data_g.meta_pages_start[size] + it != malloc_data_g.meta_pages_end[size])
 	{
-		if (it == (intptr_t)usr_ptr)
-			it = 0;
+		if (*(intptr_t*)(malloc_data_g.meta_pages_start[size] + it) == (intptr_t)usr_ptr)
+		{
+			*(intptr_t*)(malloc_data_g.meta_pages_start[size] + it) = 0;
+			return (M_OK);
+		}
 		it++;
 	}
-	return (0);
+	return (M_NOK);
 }
