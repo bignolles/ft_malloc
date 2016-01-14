@@ -2,17 +2,22 @@ ifeq ($(HOSTTYPE),)
 	HOSTTYPE = $(shell uname -m)_$(shell uname -s)
 endif
 NAME =			libft_malloc_$(HOSTTYPE).so
+UNIT_NAME =		tests
 LINKNAME =		libft_malloc.so
 SRCS_DIR =		./srcs/
 INCLUDES_DIR =	./includes/
 OBJ_DIR =		./obj/
 LIBFT_DIR =		./libft/
+UNIT_DIR =		./unit_tests/
 LIBFT_NAME =	libft.a
 SRCS =			metadata.c
 OBJ =			$(SRCS:.c=.o)
+UNIT_SRCS =		main.c\
+				unit_metadata.c
+UNIT_OBJS =		$(UNIT_SRCS:.c=.o)
 LIBFT =			$(LIBFT_DIR)libft.a
 CC =			clang
-CFLAGS =		-Wall -Wextra -Werror -I $(INCLUDES_DIR) -I $(LIBFT_DIR)includes -c -o
+CFLAGS =		-Wall -Wextra -Werror -I $(INCLUDES_DIR) -I $(LIBFT_DIR)includes -o
 LDFLAGS =		-L $(LIBFT_DIR) -lft -shared -o
 
 all: $(OBJ_DIR) $(LIBFT_NAME) $(NAME)
@@ -29,7 +34,12 @@ $(NAME): $(addprefix $(OBJ_DIR), $(OBJ))
 	@ln -s $(NAME) $(LINKNAME)
 
 $(OBJ_DIR)%.o: $(SRCS_DIR)%.c
-	$(CC) $(CFLAGS) $@ $<
+	$(CC) $(CFLAGS) $@ -c $<
+	
+unit: $(UNIT_NAME)
+
+$(UNIT_NAME): 
+	$(CC) $(CFLAGS) $@ -L $(LIBFT_DIR) -lft $(LINKNAME) $(addprefix $(UNIT_DIR), $(UNIT_SRCS))
 
 clean:
 	rm -rf $(OBJ_DIR)
@@ -39,4 +49,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re unit $(UNIT_NAME)
