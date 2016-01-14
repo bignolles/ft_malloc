@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/14 17:03:21 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/14 17:15:25 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,18 +90,16 @@ void*				metadata_retrieve(void* usr_ptr)
 int					metadata_add(void *usr_ptr, blocksize_t size)
 {
 	intptr_t	it;
-	intptr_t	end;
 
-	it = (intptr_t)malloc_data_g.meta_pages_start[size];
-	end = (intptr_t)malloc_data_g.meta_pages_end[size];
-	while (it != end)
+	it = 0;
+	while (malloc_data_g.meta_pages_start[size] + it != malloc_data_g.meta_pages_end[size])
 	{
-		if (!it)
+		if (*(intptr_t*)(malloc_data_g.meta_pages_start[size] + it) == 0)
 		{
-			it = (intptr_t)usr_ptr;
+			*(intptr_t*)(malloc_data_g.meta_pages_start[size] + it) = (intptr_t)usr_ptr;
 			return (M_OK);
 		}
-		it++;
+		it += sizeof(intptr_t);
 	}
 	return (M_NOK);
 }
@@ -115,10 +113,11 @@ int					metadata_remove(void *usr_ptr, blocksize_t size)
 	{
 		if (*(intptr_t*)(malloc_data_g.meta_pages_start[size] + it) == (intptr_t)usr_ptr)
 		{
+			ft_putendl("TOTO FOOBAR! PAYS DE GALLE INDEPENDANT!");
 			*(intptr_t*)(malloc_data_g.meta_pages_start[size] + it) = 0;
 			return (M_OK);
 		}
-		it++;
+		it += sizeof(intptr_t);
 	}
 	return (M_NOK);
 }
