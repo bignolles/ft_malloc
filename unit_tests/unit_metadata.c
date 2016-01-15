@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/14 10:57:32 by marene            #+#    #+#             */
-/*   Updated: 2016/01/15 13:32:50 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/15 15:54:32 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,42 @@
 
 extern metadata_t		malloc_data_g;
 
+int		unit_use_remove(void** meta, size_t k, blocksize_t size, char** errmsg)
+{
+	if (meta[k] == NULL || metadata_remove(meta[k], size) == M_OK)
+	{
+		return (UNIT_OK);
+	}
+	else
+	{
+		*errmsg = ft_strdup("metadata_remove() failed");
+		return (UNIT_NOK);
+	}
+}
+
+int		unit_use_add(void** meta, size_t metalen, blocksize_t size, char** errmsg)
+{
+	size_t		i;
+
+	i = 0;
+	while (i < metalen && meta[i] != NULL)
+		++i;
+	if (i < metalen)
+	{
+		meta[i] = malloc(1);
+		if (metadata_add(meta[i], size) == M_OK)
+			return (UNIT_OK);
+	}
+	*errmsg = ft_strdup("metadata_add failed");
+	return (UNIT_NOK);
+}
+
 int		unit_metadata(char** errmsg)
 {
 	size_t		i;
 	size_t		j;
+	size_t		add = 0;
+	size_t		delete = 0;
 	size_t		tinysize;
 	size_t		smallsize;
 	void**		tinys;
@@ -79,23 +111,22 @@ int		unit_metadata(char** errmsg)
 			{
 				if (i < tinysize)
 				{
-					if (tinys[i] != NULL && rand() % 5 == 4)
+					if (i > 0 && rand() % 5 == 4)
 					{
-						if (metadata_remove(tinys[i], TINY) == M_NOK)
+						if (unit_use_remove(tinys, i, TINY, errmsg) == UNIT_NOK)
 						{
-							ft_putendl("metadata_remove() failed!");
 							return (UNIT_NOK);
 						}
-						else
-						{
-							free(tinys[i]);
-							tinys[i] = NULL;
-						}
+						++delete;
+						--i;
 					}
 					else
 					{
-						tinys[i] = malloc(1);
-						metadata_add(tinys[i], TINY);
+						if (unit_use_add(tinys, tinysize, TINY, errmsg) == UNIT_NOK)
+						{
+							return (UNIT_NOK);
+						}
+						++add;
 						++i;
 					}
 				}
@@ -104,6 +135,7 @@ int		unit_metadata(char** errmsg)
 					++j;
 				}
 			}
+			printf("Filling tinys and smalls: OK (%zu additions, %zu deletions)\n", add, delete);
 		}
 	}
 	return (UNIT_OK);

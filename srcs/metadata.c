@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/15 13:20:18 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/15 15:54:12 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,17 +97,34 @@ void*				metadata_retrieve(void* usr_ptr)
 
 int					metadata_add(void *usr_ptr, blocksize_t size)
 {
-	intptr_t	it;
+	size_t		it;
+	void**		meta;
+	void*		meta_ptr;
+	size_t		len;
 
 	it = 0;
-	while (malloc_data_g.meta_pages_start[size] + it != malloc_data_g.meta_pages_end[size])
+	len = 0;
+	if (usr_ptr == NULL)
+		return (M_NOK);
+	meta_ptr = usr_ptr - sizeof(void*);
+	if (size == TINY)
 	{
-		if (*(intptr_t*)(malloc_data_g.meta_pages_start[size] + it) == 0)
+		meta = malloc_data_g.meta_tiny;
+		len = malloc_data_g.meta_size_tiny;
+	}
+	else if (size == SMALL)
+	{
+		meta = malloc_data_g.meta_small;
+		len = malloc_data_g.meta_size_small;
+	}
+	while (it < len)
+	{
+		if (meta[it] == NULL)
 		{
-			*(intptr_t*)(malloc_data_g.meta_pages_start[size] + it) = (intptr_t)usr_ptr;
+			meta[it] = meta_ptr;
 			return (M_OK);
 		}
-		it += sizeof(intptr_t);
+		++it;
 	}
 	return (M_NOK);
 }
@@ -123,17 +140,18 @@ int					metadata_remove(void *usr_ptr, blocksize_t size)
 	len = 0;
 	if (size == TINY)
 	{
+		ft_putendl("remove tiny");
 		len = malloc_data_g.meta_size_tiny;
 		meta = malloc_data_g.meta_tiny;
 	}
 	else if (size == SMALL)
 	{
+		ft_putendl("remove small");
 		len = malloc_data_g.meta_size_small;
 		meta = malloc_data_g.meta_small;
 	}
 	meta_ptr = usr_ptr - sizeof(void*);
-	exit(0);
-	while (usr_ptr != NULL && it < len)
+	while (it < len)
 	{
 		if (meta[it] == meta_ptr)
 		{
