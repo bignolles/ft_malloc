@@ -6,10 +6,11 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/14 17:15:25 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/15 13:20:18 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h> // <- A desfins de tests, a enlever apres
 #include <sys/mman.h>
 #include <unistd.h>
 #include <stdint.h>
@@ -39,6 +40,11 @@ size_t				get_metapagesize(blocksize_t size)
 	return (pagesize);
 }
 
+size_t				get_metapagelen(blocksize_t size)
+{
+	return (get_metapagesize(size) / sizeof(intptr_t));
+}
+
 int					metadata_init(void)
 {
 	int		pagesize_tiny;
@@ -53,6 +59,8 @@ int					metadata_init(void)
 	pagesize_small = get_metapagesize(SMALL);
 	malloc_data_g.meta_tiny = mmap(NULL, pagesize_tiny, MMAP_PROT, MMAP_FLAGS, -1, 0);
 	malloc_data_g.meta_small = mmap(NULL, pagesize_small, MMAP_PROT, MMAP_FLAGS, -1, 0);
+	malloc_data_g.meta_size_tiny = get_metapagelen(TINY);
+	malloc_data_g.meta_size_small = get_metapagelen(SMALL);
 	if  (malloc_data_g.meta_tiny != MAP_FAILED && malloc_data_g.meta_small != MAP_FAILED)
 	{
 		ft_bzero(malloc_data_g.meta_tiny, pagesize_tiny);
@@ -106,18 +114,33 @@ int					metadata_add(void *usr_ptr, blocksize_t size)
 
 int					metadata_remove(void *usr_ptr, blocksize_t size)
 {
-	intptr_t	it;
+	size_t		it;
+	size_t		len;
+	void**		meta;
+	void*		meta_ptr;
 
 	it = 0;
-	while (malloc_data_g.meta_pages_start[size] + it != malloc_data_g.meta_pages_end[size])
+	len = 0;
+	if (size == TINY)
 	{
-		if (*(intptr_t*)(malloc_data_g.meta_pages_start[size] + it) == (intptr_t)usr_ptr)
+		len = malloc_data_g.meta_size_tiny;
+		meta = malloc_data_g.meta_tiny;
+	}
+	else if (size == SMALL)
+	{
+		len = malloc_data_g.meta_size_small;
+		meta = malloc_data_g.meta_small;
+	}
+	meta_ptr = usr_ptr - sizeof(void*);
+	exit(0);
+	while (usr_ptr != NULL && it < len)
+	{
+		if (meta[it] == meta_ptr)
 		{
-			ft_putendl("TOTO FOOBAR! PAYS DE GALLE INDEPENDANT!");
-			*(intptr_t*)(malloc_data_g.meta_pages_start[size] + it) = 0;
+			meta[it] = NULL;
 			return (M_OK);
 		}
-		it += sizeof(intptr_t);
+		++it;
 	}
 	return (M_NOK);
 }

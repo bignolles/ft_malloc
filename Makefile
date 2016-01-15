@@ -17,7 +17,7 @@ UNIT_SRCS =		main.c\
 UNIT_OBJS =		$(UNIT_SRCS:.c=.o)
 LIBFT =			$(LIBFT_DIR)libft.a
 CC =			clang
-CFLAGS =		-Wall -Wextra -Werror -I $(INCLUDES_DIR) -I $(LIBFT_DIR)includes -o
+CFLAGS =		-Wall -Wextra -Werror -g -I $(INCLUDES_DIR) -I $(LIBFT_DIR)includes -o
 LDFLAGS =		-L $(LIBFT_DIR) -lft -shared -o
 
 all: $(OBJ_DIR) $(LIBFT_NAME) $(NAME)

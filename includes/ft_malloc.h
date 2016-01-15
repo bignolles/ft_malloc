@@ -44,13 +44,15 @@ typedef struct	metadata_s
 	void*		data_tiny_end;
 	void*		data_small;
 	void*		data_small_end;
-	void*		meta_tiny;
-	void*		meta_tiny_end;
-	void*		meta_small;
-	void*		meta_small_end;
-	void*		meta_large; // On a meme pas besoin de tenir des metadata sur les larges /!
+	void**		meta_tiny;
+	void**		meta_tiny_end;
+	void**		meta_small;
+	void**		meta_small_end;
+	void**		meta_large; // On a meme pas besoin de tenir des metadata sur les larges /!
 	void		*meta_pages_start[2];
 	void		*meta_pages_end[2];
+	size_t		meta_size_tiny;
+	size_t		meta_size_small;
 }				metadata_t; // <- globale
 
 int				datapages_init(void);	// <- initialise metadata_t
@@ -58,6 +60,7 @@ int				create_meta(void);		// |
 int				create_data(void);		// |
 int				metadata_init(void);
 size_t			get_metapagesize(blocksize_t size);
+size_t			get_metapagelen(blocksize_t size);
 void*			metadata_retrieve(void* usr_ptr);
 int				metadata_add(void* usr_ptr, blocksize_t size);
 int				metadata_remove(void* usr_ptr, blocksize_t size);
