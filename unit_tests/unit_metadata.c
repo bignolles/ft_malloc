@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/14 10:57:32 by marene            #+#    #+#             */
-/*   Updated: 2016/01/15 15:54:32 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/18 11:10:08 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,30 @@
 
 extern metadata_t		malloc_data_g;
 
+void	unit_dump_meta(blocksize_t size)
+{
+	void**		meta = NULL;
+	size_t		it = 0;
+	size_t		len = 0;
+
+	if (size == TINY)
+	{
+		meta = malloc_data_g.meta_tiny;
+		len = malloc_data_g.meta_size_tiny;
+	}
+	else if (size == SMALL)
+	{
+		meta = malloc_data_g.meta_small;
+		len = malloc_data_g.meta_size_small;
+	}
+	while (it < len)
+	{
+		if (meta[it] != NULL)
+			printf("[%zu]\t%p\n", it, meta[it]);
+		++it;
+	}
+}
+
 int		unit_use_remove(void** meta, size_t k, blocksize_t size, char** errmsg)
 {
 	if (meta[k] == NULL || metadata_remove(meta[k], size) == M_OK)
@@ -26,6 +50,8 @@ int		unit_use_remove(void** meta, size_t k, blocksize_t size, char** errmsg)
 	}
 	else
 	{
+		unit_dump_meta(size);
+		printf("\t|--> %p\n", meta[k]);
 		*errmsg = ft_strdup("metadata_remove() failed");
 		return (UNIT_NOK);
 	}
@@ -41,6 +67,7 @@ int		unit_use_add(void** meta, size_t metalen, blocksize_t size, char** errmsg)
 	if (i < metalen)
 	{
 		meta[i] = malloc(1);
+		printf("use_add : %p\n", meta[i]);
 		if (metadata_add(meta[i], size) == M_OK)
 			return (UNIT_OK);
 	}
@@ -122,6 +149,7 @@ int		unit_metadata(char** errmsg)
 					}
 					else
 					{
+						printf("TOTO\n");
 						if (unit_use_add(tinys, tinysize, TINY, errmsg) == UNIT_NOK)
 						{
 							return (UNIT_NOK);

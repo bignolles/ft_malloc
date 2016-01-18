@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/15 15:54:12 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/18 10:41:19 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ int					metadata_add(void *usr_ptr, blocksize_t size)
 		if (meta[it] == NULL)
 		{
 			meta[it] = meta_ptr;
+			printf("add : [%zu]\t%p\n", it, meta[it]);
 			return (M_OK);
 		}
 		++it;
