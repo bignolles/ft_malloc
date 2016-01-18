@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/14 10:57:32 by marene            #+#    #+#             */
-/*   Updated: 2016/01/18 16:09:41 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/18 19:53:34 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ void	unit_dump_meta(blocksize_t size)
 {
 	size_t		it = 0;
 
-	while (it < malloc_data_g.meta_len[size])
+	while (it < malloc_data_g.meta_len[size] - 1)
 	{
-		if (malloc_data_g.meta_pages_start[size][it] != NULL)
+//		if (malloc_data_g.meta_pages_start[size][it] != NULL)
 			printf("[%zu]\t%p\n", it, malloc_data_g.meta_pages_start[size][it]);
 		++it;
 	}
@@ -50,14 +50,15 @@ int		unit_use_add(void** meta, size_t metalen, blocksize_t size, char** errmsg)
 	size_t		i;
 
 	i = 0;
-	while (i < metalen && meta[i] != NULL)
+	while (i < metalen - 1  && meta[i] != NULL)
 		++i;
-	if (i >= metalen)
+	if (i >= metalen - 1)
 	{
+		printf("i in use_add : %zu\n", i);
 		*errmsg = ft_strdup("no more place");
 		return (UNIT_NOK);
 	}
-	if (i < metalen)
+	if (i < metalen - 1)
 	{
 		meta[i] = malloc(1);
 		if (metadata_add(meta[i], size) == M_OK)
@@ -87,9 +88,9 @@ int		unit_metadata(char** errmsg)
 		ft_putendl("metadata_init() OK");
 		i = 0;
 		j = 0;
-		while (i < malloc_data_g.meta_len[TINY] || j < malloc_data_g.meta_len[SMALL])
+		while (i < malloc_data_g.meta_len[TINY]  - 1 || j < malloc_data_g.meta_len[SMALL] - 1)
 		{ // On verifie que les pages de metadatas on bien ete initialisee a 0
-			if (i < malloc_data_g.meta_len[TINY])
+			if (i < malloc_data_g.meta_len[TINY] - 1)
 			{
 				if (malloc_data_g.meta_tiny[i] != NULL)
 				{
@@ -98,7 +99,7 @@ int		unit_metadata(char** errmsg)
 				}
 				++i;
 			}
-			if (j < malloc_data_g.meta_len[SMALL])
+			if (j < malloc_data_g.meta_len[SMALL] - 1)
 			{
 				if (malloc_data_g.meta_pages_start[SMALL][j] != NULL)
 				{
@@ -116,15 +117,16 @@ int		unit_metadata(char** errmsg)
 		}
 		else
 		{
-			ft_putendl("tinys and malloc_data_g.meta_len[SMALL]s array malloced OK");
+			ft_putendl("tinys and smalls array malloced OK");
 			ft_bzero(tinys, malloc_data_g.meta_len[TINY]);
 			ft_bzero(smalls, malloc_data_g.meta_len[SMALL]);
-			ft_putendl("tinys and malloc_data_g.meta_len[SMALL]s array initialized OK");
+			ft_putendl("tinys and smalls array initialized OK");
 			i = 0;
 			j = 0;
-			while (i < malloc_data_g.meta_len[TINY] || j < malloc_data_g.meta_len[SMALL])
+			while (i < malloc_data_g.meta_len[TINY] - 1 || j < malloc_data_g.meta_len[SMALL] - 1)
 			{
-				if (i < malloc_data_g.meta_len[TINY])
+				++i;
+				if (i < malloc_data_g.meta_len[TINY] - 1)
 				{
 					if (i > 0 && rand() % 5 == 4)
 					{
@@ -142,10 +144,9 @@ int		unit_metadata(char** errmsg)
 							return (UNIT_NOK);
 						}
 						++add;
-						++i;
 					}
 				}
-				if (j < malloc_data_g.meta_len[SMALL])
+				if (j < malloc_data_g.meta_len[SMALL] - 1)
 				{
 					++j;
 				}

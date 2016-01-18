@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/18 16:10:29 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/18 19:54:20 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int					metadata_add(void *usr_ptr, blocksize_t size)
 	if (usr_ptr == NULL)
 		return (M_NOK);
 	meta_ptr = usr_ptr - sizeof(void*);
-	while (it < malloc_data_g.meta_len[size])
+	while (it < malloc_data_g.meta_len[size] - 1)
 	{
 		if (malloc_data_g.meta_pages_start[size][it] == NULL)
 		{
@@ -118,7 +118,7 @@ int					metadata_remove(void *usr_ptr, blocksize_t size)
 
 	it = 0;
 	meta_ptr = usr_ptr - sizeof(void*);
-	while (it < malloc_data_g.meta_len[size])
+	while (it < malloc_data_g.meta_len[size] - 1)
 	{
 		if (malloc_data_g.meta_pages_start[size][it] == meta_ptr)
 		{
