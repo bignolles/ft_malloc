@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/18 10:41:19 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/18 16:10:29 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,28 +47,23 @@ size_t				get_metapagelen(blocksize_t size)
 
 int					metadata_init(void)
 {
-	int		pagesize_tiny;
-	int		pagesize_small;
-
 	/**
 	 * \fn int metadata_init(void)
 	 * \brief cree les pages de metadata 'tiny' et 'small', et memset leurs valeur a 0
 	 * \return M_OK si tout c'est bien passe, M_NOK si mmap echoue
 	 */
-	pagesize_tiny = get_metapagesize(TINY);
-	pagesize_small = get_metapagesize(SMALL);
-	malloc_data_g.meta_tiny = mmap(NULL, pagesize_tiny, MMAP_PROT, MMAP_FLAGS, -1, 0);
-	malloc_data_g.meta_small = mmap(NULL, pagesize_small, MMAP_PROT, MMAP_FLAGS, -1, 0);
-	malloc_data_g.meta_size_tiny = get_metapagelen(TINY);
-	malloc_data_g.meta_size_small = get_metapagelen(SMALL);
+	malloc_data_g.meta_tiny = mmap(NULL, get_metapagesize(TINY), MMAP_PROT, MMAP_FLAGS, -1, 0);
+	malloc_data_g.meta_small = mmap(NULL, get_metapagesize(SMALL), MMAP_PROT, MMAP_FLAGS, -1, 0);
+	malloc_data_g.meta_len[TINY] = get_metapagelen(TINY);
+	malloc_data_g.meta_len[SMALL] = get_metapagelen(SMALL);
 	if  (malloc_data_g.meta_tiny != MAP_FAILED && malloc_data_g.meta_small != MAP_FAILED)
 	{
-		ft_bzero(malloc_data_g.meta_tiny, pagesize_tiny);
-		ft_bzero(malloc_data_g.meta_small, pagesize_small);
+		ft_bzero(malloc_data_g.meta_tiny, malloc_data_g.meta_len[TINY]);
+		ft_bzero(malloc_data_g.meta_small, malloc_data_g.meta_len[SMALL]);
 		malloc_data_g.meta_pages_start[TINY] = malloc_data_g.meta_tiny;
-		malloc_data_g.meta_pages_end[TINY] = malloc_data_g.meta_tiny + pagesize_tiny - sizeof(void *);
 		malloc_data_g.meta_pages_start[SMALL] = malloc_data_g.meta_small;
-		malloc_data_g.meta_pages_end[SMALL] = malloc_data_g.meta_small + pagesize_small - sizeof(void *);
+//		malloc_data_g.meta_pages_end[TINY] = malloc_data_g.meta_tiny + pagesize_tiny - sizeof(void *);
+//		malloc_data_g.meta_pages_end[SMALL] = malloc_data_g.meta_small + pagesize_small - sizeof(void *);
 		return (M_OK);
 	}
 	else
@@ -98,31 +93,17 @@ void*				metadata_retrieve(void* usr_ptr)
 int					metadata_add(void *usr_ptr, blocksize_t size)
 {
 	size_t		it;
-	void**		meta;
 	void*		meta_ptr;
-	size_t		len;
 
 	it = 0;
-	len = 0;
 	if (usr_ptr == NULL)
 		return (M_NOK);
 	meta_ptr = usr_ptr - sizeof(void*);
-	if (size == TINY)
+	while (it < malloc_data_g.meta_len[size])
 	{
-		meta = malloc_data_g.meta_tiny;
-		len = malloc_data_g.meta_size_tiny;
-	}
-	else if (size == SMALL)
-	{
-		meta = malloc_data_g.meta_small;
-		len = malloc_data_g.meta_size_small;
-	}
-	while (it < len)
-	{
-		if (meta[it] == NULL)
+		if (malloc_data_g.meta_pages_start[size][it] == NULL)
 		{
-			meta[it] = meta_ptr;
-			printf("add : [%zu]\t%p\n", it, meta[it]);
+			malloc_data_g.meta_pages_start[size][it] = meta_ptr;
 			return (M_OK);
 		}
 		++it;
@@ -133,30 +114,15 @@ int					metadata_add(void *usr_ptr, blocksize_t size)
 int					metadata_remove(void *usr_ptr, blocksize_t size)
 {
 	size_t		it;
-	size_t		len;
-	void**		meta;
 	void*		meta_ptr;
 
 	it = 0;
-	len = 0;
-	if (size == TINY)
-	{
-		ft_putendl("remove tiny");
-		len = malloc_data_g.meta_size_tiny;
-		meta = malloc_data_g.meta_tiny;
-	}
-	else if (size == SMALL)
-	{
-		ft_putendl("remove small");
-		len = malloc_data_g.meta_size_small;
-		meta = malloc_data_g.meta_small;
-	}
 	meta_ptr = usr_ptr - sizeof(void*);
-	while (it < len)
+	while (it < malloc_data_g.meta_len[size])
 	{
-		if (meta[it] == meta_ptr)
+		if (malloc_data_g.meta_pages_start[size][it] == meta_ptr)
 		{
-			meta[it] = NULL;
+			malloc_data_g.meta_pages_start[size][it] = NULL;
 			return (M_OK);
 		}
 		++it;

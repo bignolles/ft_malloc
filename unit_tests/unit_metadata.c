@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/14 10:57:32 by marene            #+#    #+#             */
-/*   Updated: 2016/01/18 11:10:08 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/18 16:09:41 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,24 +20,12 @@ extern metadata_t		malloc_data_g;
 
 void	unit_dump_meta(blocksize_t size)
 {
-	void**		meta = NULL;
 	size_t		it = 0;
-	size_t		len = 0;
 
-	if (size == TINY)
+	while (it < malloc_data_g.meta_len[size])
 	{
-		meta = malloc_data_g.meta_tiny;
-		len = malloc_data_g.meta_size_tiny;
-	}
-	else if (size == SMALL)
-	{
-		meta = malloc_data_g.meta_small;
-		len = malloc_data_g.meta_size_small;
-	}
-	while (it < len)
-	{
-		if (meta[it] != NULL)
-			printf("[%zu]\t%p\n", it, meta[it]);
+		if (malloc_data_g.meta_pages_start[size][it] != NULL)
+			printf("[%zu]\t%p\n", it, malloc_data_g.meta_pages_start[size][it]);
 		++it;
 	}
 }
@@ -46,12 +34,12 @@ int		unit_use_remove(void** meta, size_t k, blocksize_t size, char** errmsg)
 {
 	if (meta[k] == NULL || metadata_remove(meta[k], size) == M_OK)
 	{
+		meta[k] = NULL;
 		return (UNIT_OK);
 	}
 	else
 	{
 		unit_dump_meta(size);
-		printf("\t|--> %p\n", meta[k]);
 		*errmsg = ft_strdup("metadata_remove() failed");
 		return (UNIT_NOK);
 	}
@@ -64,10 +52,14 @@ int		unit_use_add(void** meta, size_t metalen, blocksize_t size, char** errmsg)
 	i = 0;
 	while (i < metalen && meta[i] != NULL)
 		++i;
+	if (i >= metalen)
+	{
+		*errmsg = ft_strdup("no more place");
+		return (UNIT_NOK);
+	}
 	if (i < metalen)
 	{
 		meta[i] = malloc(1);
-		printf("use_add : %p\n", meta[i]);
 		if (metadata_add(meta[i], size) == M_OK)
 			return (UNIT_OK);
 	}
@@ -81,8 +73,6 @@ int		unit_metadata(char** errmsg)
 	size_t		j;
 	size_t		add = 0;
 	size_t		delete = 0;
-	size_t		tinysize;
-	size_t		smallsize;
 	void**		tinys;
 	void**		smalls;
 
@@ -97,11 +87,9 @@ int		unit_metadata(char** errmsg)
 		ft_putendl("metadata_init() OK");
 		i = 0;
 		j = 0;
-		tinysize = get_metapagelen(TINY);
-		smallsize = get_metapagelen(SMALL);
-		while (i < tinysize || j < smallsize) // On verifie que les pages de metadatas on bien ete initialisee a 0
-		{
-			if (i < tinysize)
+		while (i < malloc_data_g.meta_len[TINY] || j < malloc_data_g.meta_len[SMALL])
+		{ // On verifie que les pages de metadatas on bien ete initialisee a 0
+			if (i < malloc_data_g.meta_len[TINY])
 			{
 				if (malloc_data_g.meta_tiny[i] != NULL)
 				{
@@ -110,33 +98,33 @@ int		unit_metadata(char** errmsg)
 				}
 				++i;
 			}
-			if (j < smallsize)
+			if (j < malloc_data_g.meta_len[SMALL])
 			{
-				if (malloc_data_g.meta_small[j] != NULL)
+				if (malloc_data_g.meta_pages_start[SMALL][j] != NULL)
 				{
-					*errmsg = ft_strdup("meta_small pages are not properly initialized");
+					*errmsg = ft_strdup("meta_malloc_data_g.meta_len[SMALL] pages are not properly initialized");
 					return (UNIT_NOK);
 				}
 				++j;
 			}
 		}
 		ft_putendl("metadata initial datas integrity OK");
-		if ((tinys = malloc(tinysize * sizeof(void*))) == NULL || (smalls = malloc(smallsize * sizeof(void*))) == NULL)
+		if ((tinys = malloc(malloc_data_g.meta_len[TINY] * sizeof(void*))) == NULL || (smalls = malloc(malloc_data_g.meta_len[SMALL] * sizeof(void*))) == NULL)
 		{
 			*errmsg = ft_strdup("Unexpected error!");
 			return (UNIT_NOK);
 		}
 		else
 		{
-			ft_putendl("tinys and smalls array malloced OK");
-			ft_bzero(tinys, tinysize);
-			ft_bzero(smalls, smallsize);
-			ft_putendl("tinys and smalls array initialized OK");
+			ft_putendl("tinys and malloc_data_g.meta_len[SMALL]s array malloced OK");
+			ft_bzero(tinys, malloc_data_g.meta_len[TINY]);
+			ft_bzero(smalls, malloc_data_g.meta_len[SMALL]);
+			ft_putendl("tinys and malloc_data_g.meta_len[SMALL]s array initialized OK");
 			i = 0;
 			j = 0;
-			while (i < tinysize || j < smallsize)
+			while (i < malloc_data_g.meta_len[TINY] || j < malloc_data_g.meta_len[SMALL])
 			{
-				if (i < tinysize)
+				if (i < malloc_data_g.meta_len[TINY])
 				{
 					if (i > 0 && rand() % 5 == 4)
 					{
@@ -149,8 +137,7 @@ int		unit_metadata(char** errmsg)
 					}
 					else
 					{
-						printf("TOTO\n");
-						if (unit_use_add(tinys, tinysize, TINY, errmsg) == UNIT_NOK)
+						if (unit_use_add(tinys, malloc_data_g.meta_len[TINY], TINY, errmsg) == UNIT_NOK)
 						{
 							return (UNIT_NOK);
 						}
@@ -158,12 +145,11 @@ int		unit_metadata(char** errmsg)
 						++i;
 					}
 				}
-				if (j < smallsize)
+				if (j < malloc_data_g.meta_len[SMALL])
 				{
 					++j;
 				}
 			}
-			printf("Filling tinys and smalls: OK (%zu additions, %zu deletions)\n", add, delete);
 		}
 	}
 	return (UNIT_OK);

@@ -49,10 +49,9 @@ typedef struct	metadata_s
 	void**		meta_small;
 	void**		meta_small_end;
 	void**		meta_large; // On a meme pas besoin de tenir des metadata sur les larges /!
-	void		*meta_pages_start[2];
-	void		*meta_pages_end[2];
-	size_t		meta_size_tiny;
-	size_t		meta_size_small;
+	void		**meta_pages_start[2];
+//	void		*meta_pages_end[2];
+	size_t		meta_len[2];
 }				metadata_t; // <- globale
 
 int				datapages_init(void);	// <- initialise metadata_t
