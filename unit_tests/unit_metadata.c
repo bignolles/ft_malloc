@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/14 10:57:32 by marene            #+#    #+#             */
-/*   Updated: 2016/01/18 19:53:34 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/19 16:35:21 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,31 @@ void	unit_dump_meta(blocksize_t size)
 
 	while (it < malloc_data_g.meta_len[size] - 1)
 	{
-//		if (malloc_data_g.meta_pages_start[size][it] != NULL)
+		if (malloc_data_g.meta_pages_start[size][it] != NULL)
 			printf("[%zu]\t%p\n", it, malloc_data_g.meta_pages_start[size][it]);
 		++it;
 	}
+}
+
+int		unit_use_retrieve(void** meta, char** errmsg)
+{
+	size_t		i = 0;
+
+	while (meta[i] != NULL)
+	{
+		if (meta[i] - sizeof(void*) != metadata_retrieve(meta[i]))
+		{
+			*errmsg = ft_strdup("metadata_retrieve() failed");
+			printf("looking for meta[%zu] : %p (%p)\n", i, meta[i], meta[i] - sizeof(void*));
+			printf("____________TINY_____________\n");
+			unit_dump_meta(TINY);
+			printf("____________SMALL_____________\n");
+			unit_dump_meta(SMALL);
+			return (UNIT_NOK);
+		}
+		++i;
+	}
+	return (UNIT_OK);
 }
 
 int		unit_use_remove(void** meta, size_t k, blocksize_t size, char** errmsg)
@@ -110,7 +131,8 @@ int		unit_metadata(char** errmsg)
 			}
 		}
 		ft_putendl("metadata initial datas integrity OK");
-		if ((tinys = malloc(malloc_data_g.meta_len[TINY] * sizeof(void*))) == NULL || (smalls = malloc(malloc_data_g.meta_len[SMALL] * sizeof(void*))) == NULL)
+		if ((tinys = malloc((malloc_data_g.meta_len[TINY] + 1) * sizeof(void*))) == NULL
+				|| (smalls = malloc((malloc_data_g.meta_len[SMALL] + 1) * sizeof(void*))) == NULL)
 		{
 			*errmsg = ft_strdup("Unexpected error!");
 			return (UNIT_NOK);
@@ -118,8 +140,8 @@ int		unit_metadata(char** errmsg)
 		else
 		{
 			ft_putendl("tinys and smalls array malloced OK");
-			ft_bzero(tinys, malloc_data_g.meta_len[TINY]);
-			ft_bzero(smalls, malloc_data_g.meta_len[SMALL]);
+			ft_bzero(tinys, malloc_data_g.meta_len[TINY] + 1);
+			ft_bzero(smalls, malloc_data_g.meta_len[SMALL] + 1);
 			ft_putendl("tinys and smalls array initialized OK");
 			i = 0;
 			j = 0;
@@ -150,6 +172,10 @@ int		unit_metadata(char** errmsg)
 				{
 					++j;
 				}
+			}
+			if (unit_use_retrieve(tinys, errmsg) == UNIT_NOK || unit_use_retrieve(smalls, errmsg) == UNIT_NOK)
+			{
+				return (UNIT_NOK);
 			}
 		}
 	}

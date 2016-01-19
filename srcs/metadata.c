@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/18 19:54:20 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/19 16:35:48 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,31 @@ void*				metadata_retrieve(void* usr_ptr)
 	 * \brief cherche un pointeur
 	 */
 	void*		meta_ptr;
+	size_t		tiny_it;
+	size_t		small_it;
 
-	meta_ptr = usr_ptr - sizeof(intptr_t);
-	if (usr_ptr != NULL && ((meta_ptr >= malloc_data_g.data_tiny && meta_ptr <= malloc_data_g.data_tiny_end)
-			|| (meta_ptr >= malloc_data_g.data_small && meta_ptr <= malloc_data_g.data_small_end)))
+	meta_ptr = usr_ptr - sizeof(void*);
+	if (usr_ptr != NULL)
 	{
+		tiny_it = 0;
+		small_it = 0;
+		while (tiny_it < malloc_data_g.meta_len[TINY] - 1 || small_it < malloc_data_g.meta_len[SMALL] - 1)
+		{
+			if (tiny_it < malloc_data_g.meta_len[TINY] - 1 && malloc_data_g.meta_pages_start[TINY][tiny_it] != NULL)
+			{
+				if (malloc_data_g.meta_pages_start[TINY][tiny_it] == meta_ptr)
+				{
+					return (meta_ptr);
+				}
+				++tiny_it;
+			}
+			if (small_it < malloc_data_g.meta_len[SMALL] - 1)
+			{
+				if (malloc_data_g.meta_pages_start[SMALL][small_it] == meta_ptr)
+					return meta_ptr;
+				++small_it;
+			}
+		}
 		return (meta_ptr);
 	}
 	else
