@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/19 16:35:48 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/20 11:27:24 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <libft.h>
 #include <ft_malloc.h>
 
-metadata_t		malloc_data_g; // <- TODO declarer en 'extern', et la declarer 'pour de vrai' dans le fichier qui contiendra la definition de malloc!
+extern metadata_t	malloc_data_g;
 
 size_t				get_metapagesize(blocksize_t size)
 {

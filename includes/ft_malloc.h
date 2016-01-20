@@ -2,6 +2,7 @@
 # define FT_MALLOC_H
 
 # include <stdint.h>
+# include <stdlib.h>
 
 # define M_OK				0x00
 # define M_NOK				0x01
@@ -14,6 +15,9 @@
 
 # define TINY_ATOMIC		16
 # define SMALL_ATOMIC		997 // <- Bidouiller le nombre de pages / les atomic pour que ces derniers soient des puissance de deux (je pense que ce sera plus propre)
+
+# define TINY_MAX_SIZE		993
+# define SMALL_MAX_SIZE		130048
 
 /**
  * \struct metadata_s
@@ -44,6 +48,8 @@ typedef struct	metadata_s
 	void*		data_tiny_end;
 	void*		data_small;
 	void*		data_small_end;
+	void*		datas[2];
+	void*		datas_end[2];
 	void**		meta_tiny;
 	void**		meta_tiny_end;
 	void**		meta_small;
@@ -54,7 +60,7 @@ typedef struct	metadata_s
 	size_t		meta_len[2];
 }				metadata_t; // <- globale
 
-int				datapages_init(void);	// <- initialise metadata_t
+int				pages_init(void);	// <- initialise metadata_t
 int				create_meta(void);		// |
 int				create_data(void);		// |
 int				metadata_init(void);
