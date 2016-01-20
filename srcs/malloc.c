@@ -6,11 +6,13 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/01/20 14:50:38 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/20 16:33:20 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <sys/mman.h>
+#include "libft.h"
 #include "ft_malloc.h"
 
 metadata_t		malloc_data_g;
@@ -31,11 +33,14 @@ void*			alloc(size_t size, blocksize_t blk_size)
 			ret = NULL;
 		return (ret);
 	}
+	printf("%zu, %d\n", size, blk_size);
 	while (data < end)
 	{
+		ft_putendl("searching for allocable memory...");
 		len = *(int32_t*)data;
 		if (len <= 0)
 		{
+			ft_putendl("\t|-> found some!\n");
 			ret = data + sizeof(int32_t);
 			if (metadata_add(ret, size) == M_OK)
 			{
@@ -60,8 +65,12 @@ void*			malloc(size_t size)
 		if (pages_init() == M_OK)
 			init = 1;
 		else
+		{
+			ft_putendl("init fail\n");
 			return (NULL);
+		}
 	}
+	printf("===== %p =====\n", malloc_data_g.meta_pages_start[TINY]);
 	if (size < TINY_MAX_SIZE)
 		return (alloc(size, TINY));
 	else if (size < SMALL_MAX_SIZE)
