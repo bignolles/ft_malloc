@@ -15,7 +15,7 @@ SRCS =			init.c\
 				metadata.c
 OBJ =			$(SRCS:.c=.o)
 UNIT_SRCS =		main.c\
-				unit_metadata.c
+				unit_malloc.c
 UNIT_OBJS =		$(UNIT_SRCS:.c=.o)
 LIBFT =			$(LIBFT_DIR)libft.a
 CC =			clang
