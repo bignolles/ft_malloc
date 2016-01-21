@@ -68,8 +68,8 @@ int				create_data(void);		// |
 int				metadata_init(void);
 size_t			get_metapagesize(blocksize_t size);
 size_t			get_metapagelen(blocksize_t size);
-void*			metadata_retrieve(void* usr_ptr);
-int				metadata_add(void* usr_ptr, blocksize_t size);
-int				metadata_remove(void* usr_ptr, blocksize_t size);
+void*			metadata_retrieve(void* usr_ptr, blocksize_t* blk_size);
+int				metadata_add(void* usr_ptr, blocksize_t blk_size);
+int				metadata_remove(void* usr_ptr, blocksize_t blk_size);
 
 #endif

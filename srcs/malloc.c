@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/01/21 11:55:00 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/21 12:12:43 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 extern metadata_t		malloc_data_g;
 
-void*			alloc(size_t size, blocksize_t blk_size)
+static void*			alloc(size_t size, blocksize_t blk_size)
 {
 	void*	data;
 	void*	end;
@@ -53,7 +53,7 @@ void*			alloc(size_t size, blocksize_t blk_size)
 	return (NULL);
 }
 
-void*			malloc(size_t size)
+void*					malloc(size_t size)
 {
 	static char		init = 0;
 

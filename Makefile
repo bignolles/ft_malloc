@@ -10,7 +10,8 @@ OBJ_DIR =		./obj/
 LIBFT_DIR =		./libft/
 UNIT_DIR =		./unit_tests/
 LIBFT_NAME =	libft.a
-SRCS =			init.c\
+SRCS =			free.c\
+				init.c\
 				malloc.c\
 				metadata.c
 OBJ =			$(SRCS:.c=.o)

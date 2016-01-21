@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/21 11:55:48 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/21 13:21:49 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,13 @@ int					metadata_init(void)
 	}
 }
 
-void*				metadata_retrieve(void* usr_ptr)
+void*				metadata_retrieve(void* usr_ptr, blocksize_t* blk_size)
 {
 	/**
 	 * \fn void* metadata_retrieve(void* usr_ptr)
 	 * \brief cherche un pointeur
+	 * \param usr_ptr pointeur 'utilisateur'
+	 * \param blk_size block auquel le pointeur appartient (se fait set par la fonction via effet de bord si on retrouve usr_ptr)
 	 */
 	void*		meta_ptr;
 	size_t		tiny_it;
@@ -94,6 +96,7 @@ void*				metadata_retrieve(void* usr_ptr)
 			{
 				if (malloc_data_g.meta_pages_start[TINY][tiny_it] == meta_ptr)
 				{
+					*blk_size = TINY;
 					return (meta_ptr);
 				}
 				++tiny_it;
@@ -101,7 +104,10 @@ void*				metadata_retrieve(void* usr_ptr)
 			if (small_it < malloc_data_g.meta_len[SMALL] - 1)
 			{
 				if (malloc_data_g.meta_pages_start[SMALL][small_it] == meta_ptr)
+				{
+					*blk_size = SMALL;
 					return meta_ptr;
+				}
 				++small_it;
 			}
 		}
