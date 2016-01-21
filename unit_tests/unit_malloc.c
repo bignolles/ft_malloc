@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/20 16:06:32 by marene            #+#    #+#             */
-/*   Updated: 2016/01/20 16:11:16 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/21 11:54:08 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int		unit_malloc(void)
 	int		i;
 
 	intPtr = malloc(sizeof(int) * max);
-	printf("______ %p ______\n", intPtr);
 	if (intPtr != NULL)
 	{
 		i = 0;
@@ -36,6 +35,7 @@ int		unit_malloc(void)
 			printf("%p [%d]\t%d\n", intPtr, i, intPtr[i]);
 			++i;
 		}
+		return (UNIT_OK);
 	}
 	return (UNIT_NOK);
 }

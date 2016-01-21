@@ -60,6 +60,8 @@ typedef struct	metadata_s
 	size_t		meta_len[2];
 }				metadata_t; // <- globale
 
+metadata_t		malloc_data_g;
+
 int				pages_init(void);	// <- initialise metadata_t
 int				create_meta(void);		// |
 int				create_data(void);		// |

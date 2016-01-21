@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/20 16:31:39 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/21 11:55:48 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ int					metadata_init(void)
 		malloc_data_g.meta_pages_start[SMALL] = malloc_data_g.meta_small;
 //		malloc_data_g.meta_pages_end[TINY] = malloc_data_g.meta_tiny + pagesize_tiny - sizeof(void *);
 //		malloc_data_g.meta_pages_end[SMALL] = malloc_data_g.meta_small + pagesize_small - sizeof(void *);
-		printf("metadata_init OK\n");
 		return (M_OK);
 	}
 	else
@@ -120,13 +119,11 @@ int					metadata_add(void *usr_ptr, blocksize_t size)
 	void*		meta_ptr;
 
 	it = 0;
-	ft_putendl("METADATA_ADD BEGIN");
 	if (usr_ptr == NULL)
 		return (M_NOK);
 	meta_ptr = usr_ptr - sizeof(void*);
 	while (it < malloc_data_g.meta_len[size] - 1)
 	{
-		printf("%p\n", malloc_data_g.meta_pages_start[size]);
 		if (malloc_data_g.meta_pages_start[size][it] == NULL)
 		{
 			malloc_data_g.meta_pages_start[size][it] = meta_ptr;

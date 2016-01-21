@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/01/20 16:24:19 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/21 11:55:24 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	data_init()
 	malloc_data_g.data_tiny = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
 	if (malloc_data_g.data_tiny == MAP_FAILED)
 	{
-		ft_putendl("data_tiny init failed\n");
+		ft_putendl("data_tiny init failed");
 		return (M_NOK);
 	}
 	malloc_data_g.datas[TINY] = malloc_data_g.data_tiny;
@@ -38,13 +38,12 @@ static int	data_init()
 	malloc_data_g.data_small = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
 	if (malloc_data_g.data_small == MAP_FAILED)
 	{
-		ft_putendl("data_small init failed\n");
+		ft_putendl("data_small init failed");
 		return (M_NOK);
 	}
 	ft_bzero(malloc_data_g.data_small, size);
 	malloc_data_g.datas[SMALL] = malloc_data_g.data_small;
 	malloc_data_g.datas_end[SMALL] = malloc_data_g.data_small + size;
-	ft_putendl("data_init() OK\n");
 	return (M_OK);
 }
 
