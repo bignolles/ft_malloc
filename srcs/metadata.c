@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/21 13:21:49 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/21 17:17:15 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,32 +45,38 @@ size_t				get_metapagelen(blocksize_t size)
 	return (get_metapagesize(size) / sizeof(intptr_t));
 }
 
-int					metadata_init(void)
+int					metadata_init(blocksize_t* blk_size)
 {
 	/**
 	 * \fn int metadata_init(void)
 	 * \brief cree les pages de metadata 'tiny' et 'small', et memset leurs valeur a 0
 	 * \return M_OK si tout c'est bien passe, M_NOK si mmap echoue
 	 */
-	malloc_data_g.meta_tiny = mmap(NULL, get_metapagesize(TINY), MMAP_PROT, MMAP_FLAGS, -1, 0);
-	malloc_data_g.meta_small = mmap(NULL, get_metapagesize(SMALL), MMAP_PROT, MMAP_FLAGS, -1, 0);
-	malloc_data_g.meta_len[TINY] = get_metapagelen(TINY);
-	malloc_data_g.meta_len[SMALL] = get_metapagelen(SMALL);
-	if  (malloc_data_g.meta_tiny != MAP_FAILED && malloc_data_g.meta_small != MAP_FAILED)
+	if (blk_size == NULL || *blk_size == TINY)
 	{
-		ft_bzero(malloc_data_g.meta_tiny, malloc_data_g.meta_len[TINY]);
-		ft_bzero(malloc_data_g.meta_small, malloc_data_g.meta_len[SMALL]);
-		malloc_data_g.meta_pages_start[TINY] = malloc_data_g.meta_tiny;
-		malloc_data_g.meta_pages_start[SMALL] = malloc_data_g.meta_small;
-//		malloc_data_g.meta_pages_end[TINY] = malloc_data_g.meta_tiny + pagesize_tiny - sizeof(void *);
-//		malloc_data_g.meta_pages_end[SMALL] = malloc_data_g.meta_small + pagesize_small - sizeof(void *);
-		return (M_OK);
+		malloc_data_g.meta_tiny = mmap(NULL, get_metapagesize(TINY), MMAP_PROT, MMAP_FLAGS, -1, 0);
+		malloc_data_g.meta_len[TINY] = get_metapagelen(TINY);
+		if  (malloc_data_g.meta_tiny != MAP_FAILED)
+		{
+			ft_bzero(malloc_data_g.meta_tiny, malloc_data_g.meta_len[TINY]);
+			malloc_data_g.meta_pages_start[TINY] = malloc_data_g.meta_tiny;
+		}
+		else
+			return (M_NOK);
 	}
-	else
+	if (blk_size == NULL || *blk_size == SMALL)
 	{
-		printf("metadata_init failed\n");
-		return (M_NOK);
+		malloc_data_g.meta_small = mmap(NULL, get_metapagesize(SMALL), MMAP_PROT, MMAP_FLAGS, -1, 0);
+		malloc_data_g.meta_len[SMALL] = get_metapagelen(SMALL);
+		if  (malloc_data_g.meta_tiny != MAP_FAILED)
+		{
+			ft_bzero(malloc_data_g.meta_small, malloc_data_g.meta_len[SMALL]);
+			malloc_data_g.meta_pages_start[SMALL] = malloc_data_g.meta_small;
+		}
+		else
+			return (M_NOK);
 	}
+	return (M_OK);
 }
 
 void*				metadata_retrieve(void* usr_ptr, blocksize_t* blk_size)

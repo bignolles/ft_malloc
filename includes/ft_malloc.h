@@ -62,10 +62,10 @@ typedef struct	metadata_s
 
 metadata_t		malloc_data_g;
 
-int				pages_init(void);	// <- initialise metadata_t
+int				pages_init(blocksize_t* blk_size);	// <- initialise metadata_t
 int				create_meta(void);		// |
 int				create_data(void);		// |
-int				metadata_init(void);
+int				metadata_init(blocksize_t* blk_size);
 size_t			get_metapagesize(blocksize_t size);
 size_t			get_metapagelen(blocksize_t size);
 void*			metadata_retrieve(void* usr_ptr, blocksize_t* blk_size);

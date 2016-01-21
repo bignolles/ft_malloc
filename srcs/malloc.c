@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/01/21 12:12:43 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/21 17:26:39 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,24 +53,33 @@ static void*			alloc(size_t size, blocksize_t blk_size)
 	return (NULL);
 }
 
+static blocksize_t		get_blk_size(size_t size)
+{
+	if (size < TINY_MAX_SIZE)
+		return (TINY);
+	else if (size < SMALL_MAX_SIZE)
+		return (SMALL);
+	else
+		return (LARGE);
+}
+
 void*					malloc(size_t size)
 {
-	static char		init = 0;
+	static char		init[3] = {0, 0, 0};
+	blocksize_t		blk_size;
 
-	if (!init)
+	ft_putendl("__MALLOC__");
+	blk_size = get_blk_size(size);
+	if (init[blk_size])
 	{
-		if (pages_init() == M_OK)
-			init = 1;
+		if (pages_init(&blk_size) == M_OK)
+			init[blk_size] = 1;
 		else
 		{
 			ft_putendl("init fail\n");
 			return (NULL);
 		}
 	}
-	if (size < TINY_MAX_SIZE)
-		return (alloc(size, TINY));
-	else if (size < SMALL_MAX_SIZE)
-		return (alloc(size, SMALL));
-	else
-		return (alloc(size, LARGE));
+	ft_putendl("calling alloc()");
+	return (alloc(size, blk_size));
 }
