@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/01/21 14:44:13 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/22 16:04:28 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void			adjust_free_memory_size(void* meta_ptr, blocksize_t blk_size)
 	}
 }
 
-void				free(void* usr_ptr)
+void				ft_free(void* usr_ptr)
 {
 	void*			meta_ptr;
 	blocksize_t		blk_size;

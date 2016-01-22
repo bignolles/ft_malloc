@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/21 17:17:15 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/22 16:25:48 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,10 @@ int					metadata_init(blocksize_t* blk_size)
 	 */
 	if (blk_size == NULL || *blk_size == TINY)
 	{
+		ft_putendl("mmap init meta tiny");
 		malloc_data_g.meta_tiny = mmap(NULL, get_metapagesize(TINY), MMAP_PROT, MMAP_FLAGS, -1, 0);
 		malloc_data_g.meta_len[TINY] = get_metapagelen(TINY);
+		printf("meta_tiny pages reclaim : %lu\n", get_metapagesize(TINY) / getpagesize());
 		if  (malloc_data_g.meta_tiny != MAP_FAILED)
 		{
 			ft_bzero(malloc_data_g.meta_tiny, malloc_data_g.meta_len[TINY]);
@@ -66,8 +68,10 @@ int					metadata_init(blocksize_t* blk_size)
 	}
 	if (blk_size == NULL || *blk_size == SMALL)
 	{
+		ft_putendl("mmap  init meta small");
 		malloc_data_g.meta_small = mmap(NULL, get_metapagesize(SMALL), MMAP_PROT, MMAP_FLAGS, -1, 0);
 		malloc_data_g.meta_len[SMALL] = get_metapagelen(SMALL);
+		printf("meta_small pages reclaim : %lu\n", get_metapagesize(SMALL) / getpagesize());
 		if  (malloc_data_g.meta_tiny != MAP_FAILED)
 		{
 			ft_bzero(malloc_data_g.meta_small, malloc_data_g.meta_len[SMALL]);
