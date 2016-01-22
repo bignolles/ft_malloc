@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/01/22 19:23:48 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/22 20:05:47 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,10 @@ static int	data_init(blocksize_t* blk_size)
 	pagesize = getpagesize();
 	if (blk_size == NULL || *blk_size == TINY)
 	{
-	//	ft_putendl("TINY INIT");
 		size = TINY_PAGES_NB * pagesize;
-		printf("data_tiny pages reclaim :  : %d\n", size / pagesize);
-		ft_putendl("mmap init data tiny");
 		malloc_data_g.data_tiny = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
 		if (malloc_data_g.data_tiny == MAP_FAILED)
 		{
-			ft_putendl("data_tiny init failed");
 			return (M_NOK);
 		}
 		malloc_data_g.datas[TINY] = malloc_data_g.data_tiny;
@@ -43,12 +39,9 @@ static int	data_init(blocksize_t* blk_size)
 	if (blk_size == NULL || *blk_size == SMALL)
 	{
 		size = SMALL_PAGES_NB * pagesize;
-		printf("data_small pages reclaim :  : %d\n", size / pagesize);
-		ft_putendl("mmap init data small");
 		malloc_data_g.data_small = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
 		if (malloc_data_g.data_small == MAP_FAILED)
 		{
-			ft_putendl("data_small init failed");
 			return (M_NOK);
 		}
 		ft_bzero(malloc_data_g.data_small, size);
@@ -60,7 +53,7 @@ static int	data_init(blocksize_t* blk_size)
 
 int		pages_init(blocksize_t* blk_size)
 {
-	if (data_init(blk_size) == M_OK /*&& metadata_init(blk_size) == M_OK*/)
+	if (data_init(blk_size) == M_OK && metadata_init(blk_size) == M_OK)
 		return (M_OK);
 	else
 		return (M_NOK);

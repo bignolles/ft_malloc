@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/01/22 19:26:18 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/22 20:05:04 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ static void*			alloc(size_t size, blocksize_t blk_size)
 	end = malloc_data_g.datas_end[blk_size];
 	if (blk_size == LARGE)
 	{
-		ft_putendl("mmap malloc large");
 		ret = mmap(NULL, size + sizeof(int32_t), MMAP_PROT, MMAP_FLAGS, -1, 0);
 		if (ret == MAP_FAILED)
 		{
@@ -40,7 +39,7 @@ static void*			alloc(size_t size, blocksize_t blk_size)
 	while (data < end)
 	{
 		len = *(int32_t*)data;
-		if (len <= 0 && (size_t)(len * -1) >= size)
+		if (len <= 0 && ((len * -1) >= (int)size || len == 0))
 		{
 			ret = data + sizeof(int32_t);
 			if (metadata_add(ret, blk_size) == M_OK)
@@ -61,16 +60,12 @@ static void*			alloc(size_t size, blocksize_t blk_size)
 
 static blocksize_t		get_blk_size(size_t size)
 {
-	if (size > 1024)
-		ft_putendl("wtf??");
 	if (size <= TINY_MAX_SIZE)
 	{
-		ft_putendl("TINY");
 		return (TINY);
 	}
 	else if (size <= SMALL_MAX_SIZE)
 	{
-		ft_putendl("SMALL");
 		return (SMALL);
 	}
 	else
@@ -85,24 +80,14 @@ void*					malloc(size_t size)
 	blocksize_t		blk_size;
 
 	blk_size = get_blk_size(size);
-	if (blk_size == 0)
-		ft_putendl("blk_size -> 0");
-	else
-		ft_putendl("blk_size NOT 0");
 	if (init[blk_size] == 0)
 	{
 		if (pages_init(&blk_size) == M_OK)
 		{
-			if (blk_size == 0)
-				ft_putendl("blk_size --> 0");
-			else
-				ft_putendl("blk_size NOT 0");
 			init[blk_size] = 1;
-			exit(0);
 		}
 		else
 		{
-			ft_putendl("epic FAIL!!");
 			return (NULL);
 		}
 	}

@@ -10,7 +10,7 @@
 # define MMAP_PROT			PROT_READ | PROT_WRITE
 # define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
 
-# define TINY_PAGES_NB		100
+# define TINY_PAGES_NB		250
 # define SMALL_PAGES_NB		400 // SMALL_MAX_SIZE 4 * plus grnd que TINY_MAX_SIZE, donc 4 * plus de pages?
 
 # define TINY_ATOMIC		16

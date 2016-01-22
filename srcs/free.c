@@ -6,14 +6,16 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/01/22 16:04:28 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/22 20:10:11 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "ft_malloc.h"
 
 extern metadata_t	malloc_data_g;
 
+/*
 static void			adjust_free_memory_size(void* meta_ptr, blocksize_t blk_size)
 {
 	int		free_space_size;
@@ -35,9 +37,11 @@ static void			adjust_free_memory_size(void* meta_ptr, blocksize_t blk_size)
 		}
 	}
 }
+*/
 
-void				ft_free(void* usr_ptr)
+void				free(void* usr_ptr)
 {
+	/*
 	void*			meta_ptr;
 	blocksize_t		blk_size;
 
@@ -52,4 +56,8 @@ void				ft_free(void* usr_ptr)
 		//munmap le malloc LARGE
 		return;
 	}
+	*/
+	if (usr_ptr == NULL)
+		exit(42);
+	ft_putendl("free");
 }
