@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/01/22 20:05:47 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/25 17:43:32 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,16 @@
 
 extern metadata_t	malloc_data_g;
 
-static int	data_init(blocksize_t* blk_size)
+static int	data_init(blocksize_t blk_size)
 {
 	int	size;
 	int	pagesize;
 
 	pagesize = getpagesize();
-	if (blk_size == NULL || *blk_size == TINY)
+	if (blk_size == TINY)
 	{
 		size = TINY_PAGES_NB * pagesize;
+		printf("init tiny : %d bytes | %d pages\n", size, TINY_PAGES_NB);
 		malloc_data_g.data_tiny = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
 		if (malloc_data_g.data_tiny == MAP_FAILED)
 		{
@@ -36,8 +37,9 @@ static int	data_init(blocksize_t* blk_size)
 		malloc_data_g.datas_end[TINY] = malloc_data_g.data_tiny + size;
 		ft_bzero(malloc_data_g.data_tiny, size);
 	}
-	if (blk_size == NULL || *blk_size == SMALL)
+	if (blk_size == SMALL)
 	{
+		ft_putendl("INIT_SMALL");
 		size = SMALL_PAGES_NB * pagesize;
 		malloc_data_g.data_small = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
 		if (malloc_data_g.data_small == MAP_FAILED)
@@ -51,9 +53,9 @@ static int	data_init(blocksize_t* blk_size)
 	return (M_OK);
 }
 
-int		pages_init(blocksize_t* blk_size)
+int		pages_init(blocksize_t blk_size)
 {
-	if (data_init(blk_size) == M_OK && metadata_init(blk_size) == M_OK)
+	if (data_init(blk_size) == M_OK /*&& metadata_init(blk_size) == M_OK*/)
 		return (M_OK);
 	else
 		return (M_NOK);

@@ -10,8 +10,8 @@
 # define MMAP_PROT			PROT_READ | PROT_WRITE
 # define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
 
-# define TINY_PAGES_NB		250
-# define SMALL_PAGES_NB		400 // SMALL_MAX_SIZE 4 * plus grnd que TINY_MAX_SIZE, donc 4 * plus de pages?
+# define TINY_PAGES_NB		265 //512
+# define SMALL_PAGES_NB		4096 // SMALL_MAX_SIZE 4 * plus grnd que TINY_MAX_SIZE, donc 4 * plus de pages?
 
 # define TINY_ATOMIC		16
 # define SMALL_ATOMIC		997 // <- Bidouiller le nombre de pages / les atomic pour que ces derniers soient des puissance de deux (je pense que ce sera plus propre)
@@ -62,10 +62,10 @@ typedef struct	metadata_s
 
 metadata_t		malloc_data_g;
 
-int				pages_init(blocksize_t* blk_size);	// <- initialise metadata_t
+int				pages_init(blocksize_t blk_size);	// <- initialise metadata_t
 int				create_meta(void);		// |
 int				create_data(void);		// |
-int				metadata_init(blocksize_t* blk_size);
+int				metadata_init(blocksize_t blk_size);
 size_t			get_metapagesize(blocksize_t size);
 size_t			get_metapagelen(blocksize_t size);
 void*			metadata_retrieve(void* usr_ptr, blocksize_t* blk_size);

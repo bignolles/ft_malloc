@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/01/22 20:05:04 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/25 17:29:58 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,40 +20,38 @@ extern metadata_t		malloc_data_g;
 
 static void*			alloc(size_t size, blocksize_t blk_size)
 {
-	void*	data;
-	void*	end;
-	void*	ret;
+	int		i;
 	int32_t	len;
+	void*	data;
+	void*	data_end;
+	void*	ret;
 
-	data = malloc_data_g.datas[blk_size];
-	end = malloc_data_g.datas_end[blk_size];
+	i = 0;
 	if (blk_size == LARGE)
 	{
-		ret = mmap(NULL, size + sizeof(int32_t), MMAP_PROT, MMAP_FLAGS, -1, 0);
-		if (ret == MAP_FAILED)
+		ret = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
+		if (ret != MAP_FAILED)
 		{
-			ret = NULL;
-		}
-		return (ret);
-	}
-	while (data < end)
-	{
-		len = *(int32_t*)data;
-		if (len <= 0 && ((len * -1) >= (int)size || len == 0))
-		{
-			ret = data + sizeof(int32_t);
-			if (metadata_add(ret, blk_size) == M_OK)
-			{
-				*(int32_t*)data = size; // PROBLEME -> On stock la taille comme un int, alors qu'a la base c'est un size_t! :/
-				return (data);
-			}
-			else
-			{
-				return (NULL);
-			}
+			*(int32_t*)ret = (int32_t)size;
+			return (ret + sizeof(int32_t));
 		}
 		else
-			data += sizeof(int32_t) + len;
+			return (NULL);
+	}
+	data = malloc_data_g.datas[blk_size];
+	data_end = malloc_data_g.datas_end[blk_size];
+	while (data + i < data_end)
+	{
+		len = *(int32_t*)(data + i);
+		if (len > 0)
+		{
+			i += len + 1;
+		}
+		else if (len == 0 || len >= (int32_t)size)
+		{
+			*(int32_t*)(data + i) = (int32_t)size;
+			return (data + i + sizeof(int32_t));
+		}
 	}
 	return (NULL);
 }
@@ -76,20 +74,21 @@ static blocksize_t		get_blk_size(size_t size)
 
 void*					malloc(size_t size)
 {
-	static char		init[3] = {0, 0, 0};
 	blocksize_t		blk_size;
+	static int		init[2] = {0, 0};
 
-	blk_size = get_blk_size(size);
-	if (init[blk_size] == 0)
+	if (size > 0)
 	{
-		if (pages_init(&blk_size) == M_OK)
+		blk_size = get_blk_size(size);
+		if (init[blk_size] == 0)
 		{
-			init[blk_size] = 1;
+			if (pages_init(blk_size) == M_OK)
+				init[blk_size] = 1;
+			else
+				return (NULL);
 		}
-		else
-		{
-			return (NULL);
-		}
+		return (alloc(size, blk_size));
 	}
-	return (alloc(size, blk_size));
+	else
+		return (NULL);
 }

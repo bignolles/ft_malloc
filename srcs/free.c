@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/01/22 20:10:11 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/25 17:30:13 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 extern metadata_t	malloc_data_g;
 
-/*
 static void			adjust_free_memory_size(void* meta_ptr, blocksize_t blk_size)
 {
 	int		free_space_size;
@@ -37,17 +36,15 @@ static void			adjust_free_memory_size(void* meta_ptr, blocksize_t blk_size)
 		}
 	}
 }
-*/
 
 void				free(void* usr_ptr)
 {
-	/*
 	void*			meta_ptr;
 	blocksize_t		blk_size;
 
 	blk_size = TINY; // On initialse par defaut a TINY
-	meta_ptr = metadata_retrieve(usr_ptr, &blk_size);
-	if (meta_ptr != NULL && *(int32_t*)meta_ptr > 0 && blk_size < LARGE)
+	meta_ptr = usr_ptr - sizeof(int32_t);
+	if (usr_ptr != NULL && meta_ptr != NULL && *(int32_t*)meta_ptr > 0 && blk_size < LARGE)
 	{
 		adjust_free_memory_size(meta_ptr, blk_size);
 	}
@@ -56,8 +53,4 @@ void				free(void* usr_ptr)
 		//munmap le malloc LARGE
 		return;
 	}
-	*/
-	if (usr_ptr == NULL)
-		exit(42);
-	ft_putendl("free");
 }

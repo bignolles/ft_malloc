@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/12 15:02:38 by marene            #+#    #+#             */
-/*   Updated: 2016/01/22 19:34:22 by marene           ###   ########.fr       */
+/*   Updated: 2016/01/25 17:41:25 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,15 @@ size_t				get_metapagelen(blocksize_t size)
 	return (get_metapagesize(size) / sizeof(intptr_t));
 }
 
-int					metadata_init(blocksize_t* blk_size)
+int					metadata_init(blocksize_t blk_size)
 {
 	/**
 	 * \fn int metadata_init(void)
 	 * \brief cree les pages de metadata 'tiny' et 'small', et memset leurs valeur a 0
 	 * \return M_OK si tout c'est bien passe, M_NOK si mmap echoue
 	 */
-	if (blk_size == NULL || *blk_size == TINY)
+	ft_putendl("METADATA_INIT");
+	if (blk_size == TINY)
 	{
 		malloc_data_g.meta_tiny = mmap(NULL, get_metapagesize(TINY), MMAP_PROT, MMAP_FLAGS, -1, 0);
 		malloc_data_g.meta_len[TINY] = get_metapagelen(TINY);
@@ -64,7 +65,7 @@ int					metadata_init(blocksize_t* blk_size)
 		else
 			return (M_NOK);
 	}
-	if (blk_size == NULL || *blk_size == SMALL)
+	if (blk_size == SMALL)
 	{
 		malloc_data_g.meta_small = mmap(NULL, get_metapagesize(SMALL), MMAP_PROT, MMAP_FLAGS, -1, 0);
 		malloc_data_g.meta_len[SMALL] = get_metapagelen(SMALL);
@@ -92,30 +93,31 @@ void*				metadata_retrieve(void* usr_ptr, blocksize_t* blk_size)
 	size_t		small_it;
 
 	meta_ptr = usr_ptr - sizeof(void*);
-	if (usr_ptr != NULL)
+	if (usr_ptr != NULL && meta_ptr != NULL)
 	{
 		tiny_it = 0;
 		small_it = 0;
-		while (tiny_it < malloc_data_g.meta_len[TINY] - 1 || small_it < malloc_data_g.meta_len[SMALL] - 1)
+		while ((tiny_it < malloc_data_g.meta_len[TINY] - 1 && malloc_data_g.meta_pages_start[TINY][tiny_it])
+				|| (small_it < malloc_data_g.meta_len[SMALL] - 1 && malloc_data_g.meta_pages_start[SMALL][small_it]))
 		{
-			if (tiny_it < malloc_data_g.meta_len[TINY] - 1 && malloc_data_g.meta_pages_start[TINY][tiny_it] != NULL)
+			if (tiny_it < malloc_data_g.meta_len[TINY] - 1)
 			{
-				if (malloc_data_g.meta_pages_start[TINY][tiny_it] == meta_ptr)
+				if (malloc_data_g.meta_pages_start[TINY] && malloc_data_g.meta_pages_start[TINY][tiny_it] == meta_ptr)
 				{
 					*blk_size = TINY;
 					return (meta_ptr);
 				}
-				++tiny_it;
 			}
-			if (small_it < malloc_data_g.meta_len[SMALL] - 1)
+			if (malloc_data_g.meta_pages_start[SMALL] && small_it < malloc_data_g.meta_len[SMALL] - 1)
 			{
 				if (malloc_data_g.meta_pages_start[SMALL][small_it] == meta_ptr)
 				{
 					*blk_size = SMALL;
 					return meta_ptr;
 				}
-				++small_it;
 			}
+			++small_it;
+			++tiny_it;
 		}
 		return (meta_ptr);
 	}
