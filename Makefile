@@ -13,7 +13,7 @@ LIBFT_NAME =	libft.a
 SRCS =			free.c\
 				init.c\
 				malloc.c\
-				metadata.c
+				show_alloc_mem.c
 OBJ =			$(SRCS:.c=.o)
 UNIT_SRCS =		main.c\
 				unit_malloc.c
@@ -49,6 +49,7 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
+	rm -rf $(LINKNAME)
 
 re: fclean all
 

@@ -10,7 +10,7 @@
 # define MMAP_PROT			PROT_READ | PROT_WRITE
 # define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
 
-# define TINY_PAGES_NB		265 //512
+# define TINY_PAGES_NB		200//512 NOTA: 311 pages -> valeur min pour que le bug n'apparaisse pas. fuuuuu
 # define SMALL_PAGES_NB		4096 // SMALL_MAX_SIZE 4 * plus grnd que TINY_MAX_SIZE, donc 4 * plus de pages?
 
 # define TINY_ATOMIC		16
@@ -50,6 +50,7 @@ typedef struct	metadata_s
 	void*		data_small_end;
 	void*		datas[2];
 	void*		datas_end[2];
+	size_t		datas_len[2];
 	void**		meta_tiny;
 	void**		meta_tiny_end;
 	void**		meta_small;
@@ -71,6 +72,10 @@ size_t			get_metapagelen(blocksize_t size);
 void*			metadata_retrieve(void* usr_ptr, blocksize_t* blk_size);
 int				metadata_add(void* usr_ptr, blocksize_t blk_size);
 int				metadata_remove(void* usr_ptr, blocksize_t blk_size);
+void			show_alloc_mem(void);
+int				ft_putnbr_recursive(int32_t nb, int mult);
+int				get_mult(int32_t nb);
+void			putaddr(unsigned long int n);
 
 void*	ft_malloc(size_t size);
 void	ft_free(void* ptr);
