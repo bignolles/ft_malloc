@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/01/27 16:36:59 by ndatin           ###   ########.fr       */
+/*   Updated: 2016/02/01 18:16:16 by ndatin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,22 +44,24 @@ void				free(void* usr_ptr)
 {
 	void*			meta_ptr;
 	int				to_unmap;
-	int				ptr_size;
+	int				alloced;
+	int				page_size;
 	blocksize_t		blk_size;
 
-	blk_size = TINY; // On initialse par defaut a TINY
 	meta_ptr = usr_ptr - sizeof(int32_t);
+	blk_size = TINY;//*(int32_t*)meta_ptr; // On initialse par defaut a TINY
 	if (usr_ptr != NULL && meta_ptr != NULL && *(int32_t*)meta_ptr > 0 && blk_size < LARGE)
-	{
 		adjust_free_memory_size(meta_ptr, blk_size);
-	}
 	else
 	{
-		ptr_size = *(int32_t*)usr_ptr + sizeof(int32_t);
-		to_unmap = (getpagesize() % ptr_size) * getpagesize();
+		to_unmap = 0;
+		page_size = getpagesize();
+		alloced = *(int32_t*)meta_ptr;
+		to_unmap = alloced;
+		if (alloced % page_size > 0)
+			to_unmap += (page_size - (alloced % page_size));
 		munmap(usr_ptr, to_unmap);
-		//printf("munmap(%p, %d)\n", usr_ptr, to_unmap);
-		//munmap le malloc LARGE
+		//printf("mumap(%p (%d), %d)\n", usr_ptr, *(int32_t*)meta_ptr, to_unmap);
 		return ;
 	}
 }
