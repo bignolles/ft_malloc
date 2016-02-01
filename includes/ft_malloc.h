@@ -10,13 +10,13 @@
 # define MMAP_PROT			PROT_READ | PROT_WRITE
 # define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
 
-# define TINY_PAGES_NB		200//512 NOTA: 311 pages -> valeur min pour que le bug n'apparaisse pas. fuuuuu
-# define SMALL_PAGES_NB		4096 // SMALL_MAX_SIZE 4 * plus grnd que TINY_MAX_SIZE, donc 4 * plus de pages?
+# define TINY_PAGES_NB		25//PREVIOUSLY 260 -> PLZ RESTORE AFTER TESTS //512 NOTA: 311 pages -> valeur min pour que le bug n'apparaisse pas. fuuuuu
+# define SMALL_PAGES_NB		257 //PREVIOUSLY 4096 SMALL_MAX_SIZE 4 * plus grnd que TINY_MAX_SIZE, donc 4 * plus de pages?
 
 # define TINY_ATOMIC		16
 # define SMALL_ATOMIC		997 // <- Bidouiller le nombre de pages / les atomic pour que ces derniers soient des puissance de deux (je pense que ce sera plus propre)
 
-# define TINY_MAX_SIZE		1024
+# define TINY_MAX_SIZE		994 // PREVIOUSLY 1024 -> RESTORE AFTER TEST PLZ
 # define SMALL_MAX_SIZE		4096
 
 /**

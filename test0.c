@@ -1,7 +1,3 @@
-#include "includes/ft_malloc.h"
-#include "libft/includes/libft.h"
-#include <unistd.h>
-
 int main() 
 { 
 	int i; 
@@ -13,5 +9,5 @@ int main()
 	{ 
 		i++; 
 	} 
-	return (0); 
+	return (42); 
 } 

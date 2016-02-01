@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 17:43:53 by marene            #+#    #+#             */
-/*   Updated: 2016/01/29 16:49:23 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/01 17:16:14 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int				get_mult(int32_t nb)
 {
 	int		i = 1;
 
+	nb = (nb > 0) ? nb : nb * -1;
 	while (nb / i >= 10)
 		i *= 10;
 	return (i);
@@ -71,7 +72,9 @@ void			show_alloc_mem(void)
 {
 	void*		it;
 	int32_t		size;
+	int32_t		total_size;
 
+	total_size = 0;
 	it = malloc_data_g.datas[TINY];
 	ft_putendl("---------------------------------------------------------");
 	ft_putstr("TINY : ");
@@ -90,17 +93,30 @@ void			show_alloc_mem(void)
 			size = *(int32_t*)it;
 			if (size > 0)
 			{
+				total_size += size;
 				putaddr((uint64_t)(it + sizeof(int32_t)));
 				ft_putstr(" - ");
 				putaddr((uint64_t)(it + sizeof(int32_t) + size));
 				ft_putstr(" : ");
-				ft_putnbr_recursive(size, get_mult(size));
-				ft_putendl(" octets");
+				ft_putnbr_recursive((size > 0) ? size : -1 * size, get_mult(size));
+				ft_putstr(" octets ");
+				ft_putendl((size > 0) ? "allocated" : "free");
 			}
 			if (size < 0)
 				size *= -1;
 		}
 		it += (size + sizeof(int32_t));
 	}
+	ft_putstr("TINY : ");
+	putaddr((unsigned long int)it);
+	ft_putstr(" - ");
+	putaddr((unsigned long int)malloc_data_g.datas_end[TINY]);
+	ft_putstr(" [MAX ALLOC : ");
+	ft_putnbr_recursive(alloc_maxsize_g, get_mult(alloc_maxsize_g));
+	ft_putstr(" bytes]");
+	ft_putchar('\n');
+	ft_putstr("total size : ");
+	ft_putnbr_recursive(total_size, get_mult(total_size));
+	ft_putendl(" octets");
 	ft_putendl("---------------------------------------------------------");
 }

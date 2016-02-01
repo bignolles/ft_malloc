@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/01/29 18:22:40 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/01 14:47:21 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,10 @@ static int	data_init(blocksize_t blk_size)
 			return (M_NOK);
 		}
 		ft_bzero(malloc_data_g.data_tiny, size);
+		*(int32_t*)malloc_data_g.data_tiny = -1 * size;
 		malloc_data_g.datas_len[TINY] = size;
 		malloc_data_g.datas[TINY] = malloc_data_g.data_tiny;
-		malloc_data_g.datas_end[TINY] = malloc_data_g.data_tiny + size - sizeof(void*); 
-		/*
-			^ attention: GROSSE modif, les 8 derniers bytes de chaque segments data serviront a present d'adresse pour le morceau de segment suivant
-		*/
+		malloc_data_g.datas_end[TINY] = malloc_data_g.data_tiny + size; 
 	}
 	if (blk_size == SMALL)
 	{
@@ -49,6 +47,7 @@ static int	data_init(blocksize_t blk_size)
 			return (M_NOK);
 		}
 		ft_bzero(malloc_data_g.data_small, size);
+		*(int32_t*)malloc_data_g.data_small = -1 * size;
 		malloc_data_g.datas_len[SMALL] = size;
 		malloc_data_g.datas[SMALL] = malloc_data_g.data_small;
 		malloc_data_g.datas_end[SMALL] = malloc_data_g.data_small + size - sizeof(void*);

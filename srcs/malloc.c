@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/01/29 18:29:04 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/01 18:14:56 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,31 +43,24 @@ static void*			alloc(size_t size, blocksize_t blk_size)
 	}
 	data = malloc_data_g.datas[blk_size];
 	data_end = malloc_data_g.datas_end[blk_size];
-	while (data != NULL)
+	len = 0;
+	while (data + i < data_end)
 	{
-		while (data + i < data_end)
+		len = *(int32_t*)(data + i);
+		if (len > 0)
 		{
-			len = *(int32_t*)(data + i);
-			if (len > 0)
-			{
-				i += len + sizeof(int32_t);
-			}
-			else if ((len == 0 && data + i + sizeof(int32_t) + size < data_end) || -1 * len >= (int32_t)size)
-			{
-				if (size > alloc_maxsize_g)
-					alloc_maxsize_g = size;
-				*(int32_t*)(data + i) = (int32_t)size;
-				return (data + i + sizeof(int32_t));
-			}
-			else
-			{
-				i += (-1 * len) + sizeof(int32_t);
-			}
+			i += len + sizeof(int32_t);
 		}
-		data = *(void**)data_end;
-		if (data != NULL)
+		else if ((len == 0 && data + i + sizeof(int32_t) + size <= data_end) || -1 * len >= (int32_t)size)
 		{
-			data_end = data + malloc_data_g.datas_len[blk_size] - sizeof(void*);
+			if (size > alloc_maxsize_g)
+				alloc_maxsize_g = size;
+			*(int32_t*)(data + i) = (int32_t)size;
+			return (data + i + sizeof(int32_t));
+		}
+		else
+		{
+			i += (-1 * len) + sizeof(int32_t);
 		}
 	}
 	return (NULL);
