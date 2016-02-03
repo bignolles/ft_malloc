@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 17:43:53 by marene            #+#    #+#             */
-/*   Updated: 2016/02/01 17:16:14 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/03 13:56:39 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void			show_alloc_mem(void)
 		if (it != NULL)
 		{
 			size = *(int32_t*)it;
-			if (size > 0)
+			if (size != 0)
 			{
 				total_size += size;
 				putaddr((uint64_t)(it + sizeof(int32_t)));

@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/03 12:05:09 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/03 16:49:42 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 	int32_t		next_zone_size;
 
 	next_zone_size = *(int32_t*)(meta_ptr + old_size + 1);
-	if (next_zone_size <= 0 && -1 * next_zone_size >= (int32_t)new_size)
+	if (get_blk_size(new_size) == get_blk_size(old_size)
+			&& next_zone_size <= 0 && -1 * next_zone_size >= (int32_t)new_size)
 	{
 		*(int32_t*)(meta_ptr + old_size + 1) += new_size;
 		*(int32_t*)(meta_ptr) = new_size;
@@ -63,7 +64,7 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 	{
 		if ((ret = malloc(new_size)) != NULL)
 			ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
-		free(meta_ptr - sizeof(int32_t));
+		free(meta_ptr + sizeof(int32_t));
 		return (ret);
 	}
 }
