@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/20 16:05:09 by marene            #+#    #+#             */
-/*   Updated: 2016/01/20 16:21:21 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/03 11:51:13 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 # define UNIT_OK	0
 # define UNIT_NOK	1
 
+# define MAX_SEED	1000
+
 int		unit_malloc(void);
+int		unit_realloc(void);
 
 #endif
