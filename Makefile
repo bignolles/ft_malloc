@@ -13,10 +13,12 @@ LIBFT_NAME =	libft.a
 SRCS =			free.c\
 				init.c\
 				malloc.c\
+				realloc.c\
 				show_alloc_mem.c
 OBJ =			$(SRCS:.c=.o)
 UNIT_SRCS =		main.c\
-				unit_malloc.c
+				unit_malloc.c\
+				unit_realloc.c
 UNIT_OBJS =		$(UNIT_SRCS:.c=.o)
 LIBFT =			$(LIBFT_DIR)libft.a
 CC =			clang
