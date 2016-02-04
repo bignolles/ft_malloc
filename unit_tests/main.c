@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/20 15:58:35 by marene            #+#    #+#             */
-/*   Updated: 2016/02/03 13:54:43 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/04 16:47:03 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int		main(void)
 	}
 	else
 	{
-		show_alloc_mem();
 		printf("malloc() : KO\n");
 	}
 	if (unit_realloc() == UNIT_OK)
@@ -34,7 +33,6 @@ int		main(void)
 	}
 	else
 	{
-		show_alloc_mem();
 		printf("realloc() : KO\n");
 	}
 	return (0);

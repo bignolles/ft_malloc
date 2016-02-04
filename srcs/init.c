@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/02/01 14:47:21 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/04 11:57:32 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,11 @@ static int	data_init(blocksize_t blk_size)
 			return (M_NOK);
 		}
 		ft_bzero(malloc_data_g.data_tiny, size);
-		*(int32_t*)malloc_data_g.data_tiny = -1 * size;
+		//*(int32_t*)malloc_data_g.data_tiny = -1 * size;
 		malloc_data_g.datas_len[TINY] = size;
 		malloc_data_g.datas[TINY] = malloc_data_g.data_tiny;
 		malloc_data_g.datas_end[TINY] = malloc_data_g.data_tiny + size; 
+		defragment_memory(TINY);
 	}
 	if (blk_size == SMALL)
 	{

@@ -6,11 +6,12 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/03 16:49:42 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/04 19:24:29 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/mman.h>
+#include <unistd.h>
 #include "libft.h"
 #include "ft_malloc.h"
 
@@ -52,6 +53,32 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 	void*		ret;
 	int32_t		next_zone_size;
 
+	/*
+	ft_putstr("realloc ");
+	ft_putnbr_recursive(old_size, get_mult(old_size));
+	ft_putstr(" -> ");
+	ft_putnbr_recursive(new_size, get_mult(new_size));
+	ft_putchar('\n');
+	*/
+	if (old_size > SMALL_MAX_SIZE)
+	{
+		if (new_size - old_size + sizeof(int32_t) <= old_size / getpagesize() + 1)
+		{
+			ft_putendl("realloc large");
+			*(int32_t*)meta_ptr = new_size;
+			return (meta_ptr);
+		}
+		else
+		{
+			ft_putendl("malloc new large");
+			ret = malloc(new_size);
+			if (ret != NULL)
+				ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
+			free(meta_ptr + sizeof(int32_t));
+			ft_putendl("malloc new large OK");
+			return (ret);
+		}
+	}
 	next_zone_size = *(int32_t*)(meta_ptr + old_size + 1);
 	if (get_blk_size(new_size) == get_blk_size(old_size)
 			&& next_zone_size <= 0 && -1 * next_zone_size >= (int32_t)new_size)
@@ -62,8 +89,11 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 	}
 	else
 	{
-		if ((ret = malloc(new_size)) != NULL)
-			ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
+		if (get_blk_size(old_size) == LARGE)
+			ft_putendl("woops");
+		//if ((ret = malloc(new_size)) != NULL)
+		//	ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
+		ret = malloc(new_size);
 		free(meta_ptr + sizeof(int32_t));
 		return (ret);
 	}
@@ -79,7 +109,9 @@ void*					realloc(void* usr_ptr, size_t size)
 		return (malloc(size));
 	}
 	else if (size == 0)
+	{
 		return (NULL);
+	}
 	meta_ptr = usr_ptr - sizeof(int32_t);
 	meta_len = *(int32_t*)(meta_ptr);
 	if (meta_len < (int32_t)size)

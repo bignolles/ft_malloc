@@ -10,7 +10,8 @@ OBJ_DIR =		./obj/
 LIBFT_DIR =		./libft/
 UNIT_DIR =		./unit_tests/
 LIBFT_NAME =	libft.a
-SRCS =			free.c\
+SRCS =			defragment_memory.c\
+				free.c\
 				init.c\
 				malloc.c\
 				realloc.c\

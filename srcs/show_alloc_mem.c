@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 17:43:53 by marene            #+#    #+#             */
-/*   Updated: 2016/02/03 13:56:39 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/04 13:57:19 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@ int				ft_putnbr_recursive(int32_t nb, int mult)
 	int		n;
 	char	c;
 
+	if (nb < 0)
+	{
+		nb *= -1;
+		write(1, "-", 1);
+	}
 	if (mult == 1)
 	{
 		c = '0' + nb;
@@ -93,7 +98,8 @@ void			show_alloc_mem(void)
 			size = *(int32_t*)it;
 			if (size != 0)
 			{
-				total_size += size;
+				if (size > 0)
+					total_size += size;
 				putaddr((uint64_t)(it + sizeof(int32_t)));
 				ft_putstr(" - ");
 				putaddr((uint64_t)(it + sizeof(int32_t) + size));
