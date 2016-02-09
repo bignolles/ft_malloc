@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 17:43:53 by marene            #+#    #+#             */
-/*   Updated: 2016/02/04 13:57:19 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/09 12:30:37 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,24 +73,19 @@ int				get_mult(int32_t nb)
 	return (i);
 }
 
-void			show_alloc_mem(void)
+static void		print_tiny_small(char* title, void* it, void* end)
 {
-	void*		it;
 	int32_t		size;
 	int32_t		total_size;
 
-	total_size = 0;
-	it = malloc_data_g.datas[TINY];
 	ft_putendl("---------------------------------------------------------");
-	ft_putstr("TINY : ");
+	total_size = 0;
+	ft_putstr(title);
 	putaddr((unsigned long int)it);
 	ft_putstr(" - ");
-	putaddr((unsigned long int)malloc_data_g.datas_end[TINY]);
-	ft_putstr(" [MAX ALLOC : ");
-	ft_putnbr_recursive(alloc_maxsize_g, get_mult(alloc_maxsize_g));
-	ft_putstr(" bytes]");
+	putaddr((unsigned long int)end);
 	ft_putchar('\n');
-	while (it < malloc_data_g.datas_end[TINY] - sizeof(int32_t))
+	while (it < end - sizeof(int32_t))
 	{
 		size = 0;
 		if (it != NULL)
@@ -113,16 +108,11 @@ void			show_alloc_mem(void)
 		}
 		it += (size + sizeof(int32_t));
 	}
-	ft_putstr("TINY : ");
-	putaddr((unsigned long int)it);
-	ft_putstr(" - ");
-	putaddr((unsigned long int)malloc_data_g.datas_end[TINY]);
-	ft_putstr(" [MAX ALLOC : ");
-	ft_putnbr_recursive(alloc_maxsize_g, get_mult(alloc_maxsize_g));
-	ft_putstr(" bytes]");
-	ft_putchar('\n');
-	ft_putstr("total size : ");
-	ft_putnbr_recursive(total_size, get_mult(total_size));
-	ft_putendl(" octets");
 	ft_putendl("---------------------------------------------------------");
+}
+
+void			show_alloc_mem(void)
+{
+	print_tiny_small("TINY : ", malloc_data_g.datas[TINY], malloc_data_g.datas_end[TINY]);
+	print_tiny_small("SMALL : ", malloc_data_g.datas[SMALL], malloc_data_g.datas_end[SMALL]);
 }

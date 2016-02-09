@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/02/04 16:35:48 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/09 12:21:49 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static blocksize_t		get_blk_size(size_t size)
 void*					malloc(size_t size)
 {
 	blocksize_t		blk_size;
-	static int		init[2] = {0, 0};
+	static int		init[3] = {0, 0};
 
 	if (size != 0)
 	{

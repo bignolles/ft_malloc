@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/04 19:24:29 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/08 15:19:14 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,32 +50,36 @@ static void*			realloc_shrink(void* meta_ptr, size_t old_size, size_t new_size)
 
 static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 {
-	void*		ret;
-	int32_t		next_zone_size;
+	void*			ret;
+	int32_t			next_zone_size;
+	size_t			page_nb;
 
-	/*
-	ft_putstr("realloc ");
-	ft_putnbr_recursive(old_size, get_mult(old_size));
-	ft_putstr(" -> ");
-	ft_putnbr_recursive(new_size, get_mult(new_size));
-	ft_putchar('\n');
-	*/
 	if (old_size > SMALL_MAX_SIZE)
 	{
-		if (new_size - old_size + sizeof(int32_t) <= old_size / getpagesize() + 1)
+		page_nb = old_size / getpagesize();
+		if (old_size % getpagesize() > 0)
+			++page_nb;
+		ft_putstr(" {");
+		ft_putnbr_recursive(page_nb, get_mult(page_nb));
+		ft_putstr(" pages} ");
+		if (new_size + sizeof(int32_t) <= page_nb * getpagesize()) // TODO : Le probleme est la
 		{
-			ft_putendl("realloc large");
 			*(int32_t*)meta_ptr = new_size;
-			return (meta_ptr);
+			return (meta_ptr + sizeof(int32_t));
 		}
 		else
 		{
-			ft_putendl("malloc new large");
+			ft_putstr(" malloc new ptr ");
+			ft_putnbr_recursive(new_size, get_mult(new_size));
+			ft_putstr(" octets ");
 			ret = malloc(new_size);
 			if (ret != NULL)
+			{
 				ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
+				ft_putstr(" |memcpy ok| ");
+			}
 			free(meta_ptr + sizeof(int32_t));
-			ft_putendl("malloc new large OK");
+			ft_putstr(" |free ok| ");
 			return (ret);
 		}
 	}
@@ -89,11 +93,8 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 	}
 	else
 	{
-		if (get_blk_size(old_size) == LARGE)
-			ft_putendl("woops");
-		//if ((ret = malloc(new_size)) != NULL)
-		//	ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
-		ret = malloc(new_size);
+		if ((ret = malloc(new_size)) != NULL)
+			ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
 		free(meta_ptr + sizeof(int32_t));
 		return (ret);
 	}

@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/02/04 19:23:54 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/08 13:32:48 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,12 @@ void				free(void* usr_ptr)
 		to_unmap = 0;
 		page_size = getpagesize();
 		alloced = *(int32_t*)meta_ptr;
-		to_unmap = alloced;
-		if (alloced % page_size > 0)
-			to_unmap += (page_size - (alloced % page_size));
-		munmap(usr_ptr, to_unmap);
+		to_unmap = (alloced / page_size + (alloced % page_size > 0)) * page_size;
+		if (munmap(meta_ptr, to_unmap) != 0)
+		{
+			ft_putendl("freeing LARGE malloc miserably failed");
+			exit(42);
+			// ololol
+		}
 	}
 }

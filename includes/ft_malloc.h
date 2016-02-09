@@ -12,6 +12,7 @@
 
 # define TINY_PAGES_NB		25//PREVIOUSLY 260 -> PLZ RESTORE AFTER TESTS //512 NOTA: 311 pages -> valeur min pour que le bug n'apparaisse pas. fuuuuu
 # define SMALL_PAGES_NB		257 //PREVIOUSLY 4096 SMALL_MAX_SIZE 4 * plus grnd que TINY_MAX_SIZE, donc 4 * plus de pages?
+# define LARGE_PAGES_NB		2
 
 # define TINY_ATOMIC		16
 # define SMALL_ATOMIC		997 // <- Bidouiller le nombre de pages / les atomic pour que ces derniers soient des puissance de deux (je pense que ce sera plus propre)
@@ -47,7 +48,6 @@ typedef struct	metadata_s
 	void*		data_tiny;
 	void*		data_tiny_end;
 	void*		data_small;
-	void*		data_small_end;
 	void*		datas[2];
 	void*		datas_end[2];
 	size_t		datas_len[2];
