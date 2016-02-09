@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/09 19:49:55 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/09 20:12:47 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 			++page_nb;
 		if (new_size + sizeof(int32_t) <= page_nb * getpagesize()) // TODO : Le probleme est la
 		{
-			ft_putstr(" |-- Simple Realloc --| ");
 			*(int32_t*)meta_ptr = new_size;
 			return (meta_ptr + sizeof(int32_t));
 		}
@@ -76,11 +75,11 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 			return (ret);
 		}
 	}
-	next_zone_size = *(int32_t*)(meta_ptr + old_size + 1);
+	next_zone_size = *(int32_t*)(meta_ptr + old_size + sizeof(int32_t));
 	if (get_blk_size(new_size) == get_blk_size(old_size)
-			&& next_zone_size <= 0 && -1 * next_zone_size >= (int32_t)new_size)
+			&& next_zone_size < 0 && -1 * next_zone_size >= (int32_t)new_size)
 	{
-		*(int32_t*)(meta_ptr + old_size + 1) += new_size;
+		*(int32_t*)(meta_ptr + old_size + sizeof(int32_t)) += new_size;
 		*(int32_t*)(meta_ptr) = new_size;
 		return (meta_ptr + sizeof(int32_t));
 	}

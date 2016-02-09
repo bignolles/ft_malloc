@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/02 13:09:49 by marene            #+#    #+#             */
-/*   Updated: 2016/02/09 19:50:41 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/09 20:11:38 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ static int		test_integrity(int seed, int max, int* array)
 
 	if (array == NULL)
 	{
+		ft_putnbr_recursive(max, get_mult(max));
+		ft_putstr(" : ");
 		ft_putendl("integrity test failed : NULL pointer");
+		show_alloc_mem();
 		return (UNIT_NOK);
 	}
 	while (i < max)
@@ -40,8 +43,6 @@ static int		test_integrity(int seed, int max, int* array)
 			return (UNIT_NOK);
 		}
 		array[i] = seed * i + seed;
-		(void)seed;
-		(void)array;
 		++i;
 	}
 	return (UNIT_OK);
@@ -88,11 +89,6 @@ static int		realloc_test_enlarge()
 	}
 	while (++len <= 4096)
 	{
-		ft_putstr("realloc from ");
-		ft_putnbr_recursive(len - 1, get_mult(len - 1));
-		ft_putstr(" to ");
-		ft_putnbr_recursive(len, get_mult(len));
-		ft_putchar('\n');
 		if (len * sizeof(int) <= TINY_MAX_SIZE && sizes[0] == 0)
 		{
 			sizes[0] = 1;
@@ -106,7 +102,6 @@ static int		realloc_test_enlarge()
 			sizes[2] = 1;
 		}
 		ptr = realloc(ptr, sizeof(int) * len);
-		show_alloc_mem();
 		if (test_integrity(seed, len - 1, ptr) == UNIT_NOK)
 			return (UNIT_NOK);
 		ptr[len - 1] = seed * (len - 1) + seed;
