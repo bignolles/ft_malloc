@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/02 13:09:49 by marene            #+#    #+#             */
-/*   Updated: 2016/02/09 12:14:27 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/09 19:50:41 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ static int		test_integrity(int seed, int max, int* array)
 			ft_putstr(" vs ");
 			ft_putnbr_recursive(seed * i + seed, get_mult(seed * i + seed));
 			ft_putstr("[");
+			ft_putnbr_recursive(i, get_mult(i));
+			ft_putstr(" / ");
 			ft_putnbr_recursive(max, get_mult(max));
 			ft_putendl("]");
 			return (UNIT_NOK);
@@ -70,21 +72,27 @@ static int		realloc_test_shrink()
 static int		realloc_test_enlarge()
 {
 	int		seed = (rand() % MAX_SEED) + 1;
-	int		len = SMALL_MAX_SIZE / sizeof(int);
+	int		len = 1;
 	int*	ptr = malloc(sizeof(int) * len);
 	int		i = 0;
 	char	sizes[3] = {0, 0, 0};
 
 	ft_putendl("realloc_test_enlarge()");
-	ft_putnbr_recursive(len, get_mult(len));
+	ft_putstr("seed : ");
+	ft_putnbr_recursive(seed, get_mult(seed));
 	ft_putchar('\n');
 	while (i < len)
 	{
 		ptr[i] = seed * i + seed;
 		++i;
 	}
-	while (++len <= SMALL_MAX_SIZE + 42)
+	while (++len <= 4096)
 	{
+		ft_putstr("realloc from ");
+		ft_putnbr_recursive(len - 1, get_mult(len - 1));
+		ft_putstr(" to ");
+		ft_putnbr_recursive(len, get_mult(len));
+		ft_putchar('\n');
 		if (len * sizeof(int) <= TINY_MAX_SIZE && sizes[0] == 0)
 		{
 			sizes[0] = 1;
@@ -97,20 +105,11 @@ static int		realloc_test_enlarge()
 		{
 			sizes[2] = 1;
 		}
-		ft_putstr("realloc [");
-		ft_putnbr_recursive((len - 1), get_mult((len - 1)));
-		ft_putstr(" -> ");
-		ft_putnbr_recursive(len, get_mult(len));
 		ptr = realloc(ptr, sizeof(int) * len);
-		ft_putendl("] ok");
+		show_alloc_mem();
 		if (test_integrity(seed, len - 1, ptr) == UNIT_NOK)
 			return (UNIT_NOK);
-		putaddr((unsigned long int)ptr);
-		ft_putchar('\n');
-		if (len == 2048)
-			show_alloc_mem();
 		ptr[len - 1] = seed * (len - 1) + seed;
-		ft_putendl("foobar");
 	}
 	return (UNIT_OK);
 }

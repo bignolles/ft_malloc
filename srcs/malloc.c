@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/02/09 12:21:49 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/09 18:53:45 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ static void*			alloc(size_t size, blocksize_t blk_size)
 		if (ret != MAP_FAILED)
 		{
 			*(int32_t*)ret = (int32_t)size;
+			while (malloc_data_g.meta_large[i] != NULL)
+				++i;
+			malloc_data_g.meta_large[i] = ret; // TODO : Risque de segfault si i == max
 			return (ret + sizeof(int32_t));
 		}
 		else

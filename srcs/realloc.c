@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/08 15:19:14 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/09 19:49:55 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,27 +59,20 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 		page_nb = old_size / getpagesize();
 		if (old_size % getpagesize() > 0)
 			++page_nb;
-		ft_putstr(" {");
-		ft_putnbr_recursive(page_nb, get_mult(page_nb));
-		ft_putstr(" pages} ");
 		if (new_size + sizeof(int32_t) <= page_nb * getpagesize()) // TODO : Le probleme est la
 		{
+			ft_putstr(" |-- Simple Realloc --| ");
 			*(int32_t*)meta_ptr = new_size;
 			return (meta_ptr + sizeof(int32_t));
 		}
 		else
 		{
-			ft_putstr(" malloc new ptr ");
-			ft_putnbr_recursive(new_size, get_mult(new_size));
-			ft_putstr(" octets ");
-			ret = malloc(new_size);
+			ret = malloc(new_size + sizeof(int32_t));
 			if (ret != NULL)
 			{
 				ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
-				ft_putstr(" |memcpy ok| ");
 			}
 			free(meta_ptr + sizeof(int32_t));
-			ft_putstr(" |free ok| ");
 			return (ret);
 		}
 	}

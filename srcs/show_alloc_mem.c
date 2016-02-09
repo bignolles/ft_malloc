@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 17:43:53 by marene            #+#    #+#             */
-/*   Updated: 2016/02/09 12:30:37 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/09 19:35:45 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,41 @@ static void		print_tiny_small(char* title, void* it, void* end)
 	ft_putendl("---------------------------------------------------------");
 }
 
+static void		print_large(void)
+{
+	int32_t		len;
+	int			i;
+	int			max;
+	void*		it;
+
+	i = 0;
+	max = (LARGE_PAGES_NB * getpagesize()) / sizeof(void*);
+	ft_putendl("---------------------------------------------------------");
+	ft_putendl("LARGE");
+	while (i < max)
+	{
+		it = malloc_data_g.meta_large[i];
+		if (it != NULL)
+		{
+			len = *(int32_t*)it;
+			putaddr((uint64_t)(it + sizeof(int32_t)));
+			ft_putstr(" - ");
+			putaddr((uint64_t)(it + sizeof(int32_t) + len));
+			ft_putstr(" : ");
+			ft_putnbr_recursive(len, get_mult(len));
+			ft_putendl(" octets");
+		}
+		++i;
+	}
+	ft_putendl("---------------------------------------------------------");
+}
+
 void			show_alloc_mem(void)
 {
-	print_tiny_small("TINY : ", malloc_data_g.datas[TINY], malloc_data_g.datas_end[TINY]);
-	print_tiny_small("SMALL : ", malloc_data_g.datas[SMALL], malloc_data_g.datas_end[SMALL]);
+	if (malloc_data_g.datas[TINY] != NULL)
+		print_tiny_small("TINY : ", malloc_data_g.datas[TINY], malloc_data_g.datas_end[TINY]);
+	if (malloc_data_g.datas[SMALL] != NULL)
+		print_tiny_small("SMALL : ", malloc_data_g.datas[SMALL], malloc_data_g.datas_end[SMALL]);
+	if (malloc_data_g.meta_large != NULL)
+		print_large();
 }
