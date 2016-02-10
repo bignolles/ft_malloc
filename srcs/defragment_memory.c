@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/04 11:38:23 by marene            #+#    #+#             */
-/*   Updated: 2016/02/04 17:03:39 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/10 15:16:13 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void				defragment_memory(blocksize_t blk_size)
 	int32_t		size;
 	int32_t		tmp;
 
+	defrag = NULL;
 	if (blk_size < LARGE)
 	{
 		it = malloc_data_g.datas[blk_size];
@@ -30,6 +31,8 @@ void				defragment_memory(blocksize_t blk_size)
 		defrag = NULL;
 		while (it < malloc_data_g.datas_end[blk_size])
 		{
+			if (it == NULL)
+				return; //ololol
 			tmp = *(int32_t*)it;
 			if (tmp < 0)
 			{
@@ -53,7 +56,19 @@ void				defragment_memory(blocksize_t blk_size)
 				it = it + tmp + sizeof(int32_t);
 			}
 			else
-				return;
+			{
+				if (defrag == NULL)
+				{
+					defrag = it;
+					size = -1 * (int32_t)sizeof(int32_t);
+				}
+				size += sizeof(int32_t);
+				it += sizeof(int32_t);
+			}
 		}
+	}
+	if (defrag != NULL)
+	{
+		*(int32_t*)defrag = -1 * size;
 	}
 }

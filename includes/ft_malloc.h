@@ -78,4 +78,6 @@ int				get_mult(int32_t nb);
 void			putaddr(unsigned long int n);
 void			defragment_memory(blocksize_t blk_size);
 
+void*			ft_malloc(size_t);
+
 #endif

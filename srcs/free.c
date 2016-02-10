@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/02/09 20:11:56 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/10 15:20:48 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,12 @@ extern metadata_t	malloc_data_g;
 
 static blocksize_t	get_blk_size(void* meta_ptr)
 {
-	if (meta_ptr >= malloc_data_g.datas[TINY] && meta_ptr <= malloc_data_g.datas_end[TINY])
+	int32_t		size;
+
+	size = *(int32_t*)meta_ptr;
+	if (size <= TINY_MAX_SIZE)
 		return (TINY);
-	if (meta_ptr >= malloc_data_g.datas[SMALL] && meta_ptr <= malloc_data_g.datas_end[SMALL])
+	if (size <= SMALL_MAX_SIZE)
 		return (SMALL);
 	return (LARGE);
 }

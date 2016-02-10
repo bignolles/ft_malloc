@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/09 20:12:47 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/10 17:12:08 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 
 	if (old_size > SMALL_MAX_SIZE)
 	{
+		/*
+		 * realloc LARGE -> LARGE
+		 */
 		page_nb = old_size / getpagesize();
 		if (old_size % getpagesize() > 0)
 			++page_nb;
@@ -78,9 +81,9 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 	next_zone_size = *(int32_t*)(meta_ptr + old_size + sizeof(int32_t));
 	if (get_blk_size(new_size) == get_blk_size(old_size)
 			&& next_zone_size < 0 && -1 * next_zone_size >= (int32_t)new_size)
-	{
-		*(int32_t*)(meta_ptr + old_size + sizeof(int32_t)) += new_size;
+	{ // TODO : Le probleme vient de la
 		*(int32_t*)(meta_ptr) = new_size;
+		*(int32_t*)(meta_ptr + new_size + sizeof(int32_t)) = next_zone_size + new_size;
 		return (meta_ptr + sizeof(int32_t));
 	}
 	else

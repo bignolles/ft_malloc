@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/02/09 18:53:45 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/10 14:22:14 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ static void*			alloc(size_t size, blocksize_t blk_size)
 			if (size > alloc_maxsize_g)
 				alloc_maxsize_g = size;
 			*(int32_t*)(data + i) = (int32_t)size;
-			*(int32_t*)(data + i + sizeof(int32_t) + size) = len + size + sizeof(int32_t);
+			if (len != 0)
+				*(int32_t*)(data + i + sizeof(int32_t) + size) = len + size + sizeof(int32_t);
 			return (data + i + sizeof(int32_t));
 		}
 		else
