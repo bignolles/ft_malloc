@@ -56,4 +56,7 @@ fclean: clean
 
 re: fclean all
 
+norme:
+	norminette $(addprefix $(SRCS_DIR), $(SRCS))
+
 .PHONY: all clean fclean re unit $(UNIT_NAME)

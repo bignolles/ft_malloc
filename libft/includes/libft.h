@@ -6,7 +6,7 @@
 /*   By: evignol <evignol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/04 15:24:27 by evignol           #+#    #+#             */
-/*   Updated: 2015/02/04 15:24:28 by evignol          ###   ########.fr       */
+/*   Updated: 2016/02/11 18:45:37 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define LIBFT_H
 
 # include <stdlib.h>
+# include <stdint.h>
 
 # define GREY		"\033[1;30m"
 # define RED		"\033[1;31m"
@@ -150,5 +151,8 @@ int					ft_abs(int nb);
 void				ft_freearr(char **array);
 int					tryint(int err, int res, char *error);
 void				*tryptr(void *err, void *res, char *error);
+void				putaddr(unsigned long int ptr);
+void				ft_putnbr_recursive(int32_t nb, int mult);
+int					get_mult(int32_t nb);
 
 #endif

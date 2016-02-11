@@ -6,71 +6,63 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/04 11:38:23 by marene            #+#    #+#             */
-/*   Updated: 2016/02/11 13:02:43 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/11 18:57:22 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "ft_malloc.h"
 
-extern metadata_t	malloc_data_g;
+extern t_metadata	g_malloc_data;
 
-int32_t				defragment_memory(blocksize_t blk_size)
+static void			*frag_regroup(void *it, void **defrag, int32_t frag_size,
+		int32_t *total_size)
 {
-	void*		it;
-	void*		defrag;
-	int32_t		size;
-	int32_t		tmp;
+	if (*defrag == NULL)
+	{
+		*defrag = it;
+		*total_size = -1 * (int32_t)sizeof(int32_t);
+	}
+	*total_size += (frag_size + (int32_t)sizeof(int32_t));
+	it = it + frag_size + sizeof(int32_t);
+	return (it);
+}
+
+static void			*frag_concat(void *it, void **defrag, int32_t frag_size,
+		int32_t *total_size)
+{
+	if (*defrag != NULL)
+		*(int32_t*)*defrag = -1 * *total_size;
+	*defrag = NULL;
+	*total_size = 0;
+	it = it + frag_size + sizeof(int32_t);
+	return (it);
+}
+
+int32_t				defragment_memory(t_blocksize blk_size)
+{
+	void			*it;
+	void			*defrag;
+	int32_t			size;
+	int32_t			tmp;
 
 	defrag = NULL;
 	size = 0;
 	if (blk_size < LARGE)
 	{
-		it = malloc_data_g.datas[blk_size];
-		size = 0;
+		it = g_malloc_data.datas[blk_size];
 		tmp = 0;
 		defrag = NULL;
-		while (it < malloc_data_g.datas_end[blk_size])
+		while (it < g_malloc_data.datas_end[blk_size])
 		{
-			if (it == NULL)
-				return (0); //ololol
 			tmp = *(int32_t*)it;
-			if (tmp < 0)
-			{
-				tmp *= -1;
-				if (defrag == NULL)
-				{
-					defrag = it;
-					size = -1 * (int32_t)sizeof(int32_t);
-				}
-				size += (tmp + (int32_t)sizeof(int32_t));
-				it = it + tmp + sizeof(int32_t);
-			}
-			else if (tmp > 0)
-			{
-				if (defrag != NULL)
-				{
-					*(int32_t*)defrag = -1 * size;
-				}
-				defrag = NULL;
-				size = 0;
-				it = it + tmp + sizeof(int32_t);
-			}
+			if (tmp <= 0)
+				it = frag_regroup(it, &defrag, -1 * tmp, &size);
 			else
-			{
-				if (defrag == NULL)
-				{
-					defrag = it;
-					size = -1 * (int32_t)sizeof(int32_t);
-				}
-				size += sizeof(int32_t);
-				it += sizeof(int32_t);
-			}
+				it = frag_concat(it, &defrag, tmp, &size);
 		}
 	}
 	if (defrag != NULL)
-	{
 		*(int32_t*)defrag = -1 * size;
-	}
 	return (size);
 }

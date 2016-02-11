@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/02/11 13:59:29 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/11 18:57:26 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,59 +16,45 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
-extern metadata_t	malloc_data_g;
+extern t_metadata	g_malloc_data;
 
-static blocksize_t	get_blk_size(void* meta_ptr)
+static t_blocksize	get_blk_size(void *meta_ptr)
 {
-	/*
-	int32_t		size;
-
-	size = *(int32_t*)meta_ptr;
-	*/
-	if (meta_ptr >= malloc_data_g.datas[TINY] && meta_ptr < malloc_data_g.datas_end[TINY])
+	if (meta_ptr >= g_malloc_data.datas[TINY]
+			&& meta_ptr < g_malloc_data.datas_end[TINY])
 		return (TINY);
-	else if (meta_ptr >= malloc_data_g.datas[SMALL] && meta_ptr < malloc_data_g.datas_end[SMALL])
+	else if (meta_ptr >= g_malloc_data.datas[SMALL]
+			&& meta_ptr < g_malloc_data.datas_end[SMALL])
 		return (SMALL);
 	else
 		return (LARGE);
 }
 
-void				free(void* usr_ptr)
+void				free(void *usr_ptr)
 {
-	void*			meta_ptr;
+	void			*meta_ptr;
 	int				to_unmap;
 	int				alloced;
 	int				i;
-	blocksize_t		blk_size;
+	t_blocksize		blk_size;
 
 	i = 0;
 	meta_ptr = usr_ptr - sizeof(int32_t);
-	blk_size = get_blk_size(meta_ptr);//*(int32_t*)meta_ptr; // On initialse par defaut a TINY
-	if (usr_ptr != NULL && meta_ptr != NULL && *(int32_t*)meta_ptr > 0 && blk_size < LARGE)
+	blk_size = get_blk_size(meta_ptr);
+	if (usr_ptr != NULL && meta_ptr != NULL && *(int32_t*)meta_ptr > 0
+			&& blk_size < LARGE)
 	{
 		if (*(int32_t*)meta_ptr > 0)
 			*(int32_t*)meta_ptr *= -1;
-		if (defragment_memory(blk_size) == malloc_data_g.max_size[blk_size])
-		{
-		//	munmap(malloc_data_g.datas[blk_size], malloc_data_g.max_size[blk_size]);
-		//	malloc_data_g.datas[blk_size] = NULL;
-			return;
-		}
+		defragment_memory(blk_size);
 	}
 	else if (usr_ptr != NULL)
 	{
-		to_unmap = 0;
 		alloced = *(int32_t*)meta_ptr;
-		to_unmap = (alloced / getpagesize() + (alloced % getpagesize() > 0)) * getpagesize();
-		if (munmap(meta_ptr, to_unmap) != 0)
-		{
-		//	ft_putendl("freeing LARGE malloc miserably failed");
-			return;
-		//	exit(42);
-			// ololol
-		}
-		while (malloc_data_g.meta_large[i] != meta_ptr)
+		to_unmap = (alloced / getpagesize() + (alloced % getpagesize() > 0))
+			* getpagesize();
+		while (g_malloc_data.meta_large[i] != meta_ptr)
 			++i; // TODO : risque de segfault si i == max
-		malloc_data_g.meta_large[i] = NULL;
+		g_malloc_data.meta_large[i] = NULL;
 	}
 }

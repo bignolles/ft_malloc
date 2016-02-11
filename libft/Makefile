@@ -6,7 +6,7 @@
 #    By: evignol <evignol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/02/04 15:24:19 by evignol           #+#    #+#              #
-#    Updated: 2015/02/04 15:24:21 by evignol          ###   ########.fr        #
+#    Updated: 2016/02/11 18:44:21 by marene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -92,6 +92,8 @@ SRC =	ft_memset.c			\
 		cbinit.c			\
 		cbpopfront.c		\
 		cbpushback.c		\
+		ft_putaddr.c		\
+		ft_putnbr_recursive.c\
 		error.c
 
 OBJ = $(SRC:.c=.o)

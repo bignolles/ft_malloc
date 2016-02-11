@@ -6,27 +6,12 @@
 /*   By: evignol <evignol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/04 15:25:10 by evignol           #+#    #+#             */
-/*   Updated: 2015/02/04 15:25:10 by evignol          ###   ########.fr       */
+/*   Updated: 2016/02/11 19:01:51 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <libft.h>
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_itoa.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: evignol <evignol@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/02/04 15:25:08 by evignol           #+#    #+#             */
-/*   Updated: 2015/02/04 15:25:08 by evignol          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include <stdlib.h>
-#include "libft.h"
 
 static int	ft_count_char(unsigned int n)
 {
@@ -67,7 +52,6 @@ static char	*ft_uitoa(unsigned int n)
 	}
 	return (str);
 }
-
 
 void		ft_putunbr(unsigned int n)
 {

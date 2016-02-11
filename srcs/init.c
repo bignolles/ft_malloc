@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/02/11 12:59:14 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/11 18:57:30 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,59 +16,62 @@
 #include "libft.h"
 #include "ft_malloc.h"
 
-extern metadata_t	malloc_data_g;
+extern t_metadata	g_malloc_data;
 
-static int	data_init(blocksize_t blk_size)
+static int	init_tiny(void)
 {
-	int	size;
-	int	pagesize;
+	int		size;
+	int		pagesize;
 
 	pagesize = getpagesize();
-	if (blk_size == TINY)
-	{
-		size = TINY_PAGES_NB * pagesize;
-		malloc_data_g.data_tiny = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
-		if (malloc_data_g.data_tiny == MAP_FAILED)
-		{
-			return (M_NOK);
-		}
-		ft_bzero(malloc_data_g.data_tiny, size);
-		//*(int32_t*)malloc_data_g.data_tiny = -1 * size;
-		malloc_data_g.datas_len[TINY] = size;
-		malloc_data_g.datas[TINY] = malloc_data_g.data_tiny;
-		malloc_data_g.datas_end[TINY] = malloc_data_g.data_tiny + size; 
-		malloc_data_g.max_size[TINY] = defragment_memory(TINY);
-	}
-	if (blk_size == SMALL)
-	{
-		size = SMALL_PAGES_NB * pagesize;
-		malloc_data_g.data_small = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
-		if (malloc_data_g.data_small == MAP_FAILED)
-		{
-			return (M_NOK);
-		}
-		ft_bzero(malloc_data_g.data_small, size);
-		*(int32_t*)malloc_data_g.data_small = -1 * size;
-		malloc_data_g.datas_len[SMALL] = size;
-		malloc_data_g.datas[SMALL] = malloc_data_g.data_small;
-		malloc_data_g.datas_end[SMALL] = malloc_data_g.data_small + size - sizeof(void*);
-		malloc_data_g.max_size[SMALL] = defragment_memory(SMALL);
-	}
-	if (blk_size == LARGE)
-	{
-		size = LARGE_PAGES_NB * pagesize;
-		malloc_data_g.meta_large = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
-		if (malloc_data_g.meta_large == MAP_FAILED)
-			return (M_NOK);
-		ft_bzero(malloc_data_g.meta_large, size);
-	}
+	size = TINY_PAGES_NB * pagesize;
+	g_malloc_data.data_tiny = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
+	if (g_malloc_data.data_tiny == MAP_FAILED)
+		return (M_NOK);
+	ft_bzero(g_malloc_data.data_tiny, size);
+	g_malloc_data.datas_len[TINY] = size;
+	g_malloc_data.datas[TINY] = g_malloc_data.data_tiny;
+	g_malloc_data.datas_end[TINY] = g_malloc_data.data_tiny + size;
+	g_malloc_data.max_size[TINY] = defragment_memory(TINY);
 	return (M_OK);
 }
 
-int		pages_init(blocksize_t blk_size)
+static int	init_small(void)
 {
-	if (data_init(blk_size) == M_OK /*&& metadata_init(blk_size) == M_OK*/)
-		return (M_OK);
-	else
+	int		size;
+	int		pagesize;
+
+	pagesize = getpagesize();
+	size = SMALL_PAGES_NB * pagesize;
+	g_malloc_data.data_small = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
+	if (g_malloc_data.data_small == MAP_FAILED)
 		return (M_NOK);
+	ft_bzero(g_malloc_data.data_small, size);
+	*(int32_t*)g_malloc_data.data_small = -1 * size;
+	g_malloc_data.datas_len[SMALL] = size;
+	g_malloc_data.datas[SMALL] = g_malloc_data.data_small;
+	g_malloc_data.datas_end[SMALL] = g_malloc_data.data_small + size;
+	g_malloc_data.max_size[SMALL] = defragment_memory(SMALL);
+	return (M_OK);
+}
+
+int			pages_init(t_blocksize blk_size)
+{
+	int		size;
+	int		pagesize;
+
+	pagesize = getpagesize();
+	if (blk_size == TINY)
+		return (init_tiny());
+	if (blk_size == SMALL)
+		return (init_small());
+	if (blk_size == LARGE)
+	{
+		size = LARGE_PAGES_NB * pagesize;
+		g_malloc_data.meta_large = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
+		if (g_malloc_data.meta_large == MAP_FAILED)
+			return (M_NOK);
+		ft_bzero(g_malloc_data.meta_large, size);
+	}
+	return (M_OK);
 }

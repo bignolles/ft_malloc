@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/11 12:31:57 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/11 18:57:37 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 #include "libft.h"
 #include "ft_malloc.h"
 
-extern metadata_t		malloc_data_g;
+extern t_metadata		g_malloc_data;
 
-static blocksize_t		get_blk_size(size_t size)
+static t_blocksize		get_blk_size(size_t size)
 {
 	if (size <= TINY_MAX_SIZE)
 		return (TINY);
@@ -27,16 +27,18 @@ static blocksize_t		get_blk_size(size_t size)
 		return (LARGE);
 }
 
-static void*			realloc_shrink(void* meta_ptr, size_t old_size, size_t new_size)
+static void				*realloc_shrink(void *meta_ptr, size_t old_size,
+		size_t new_size)
 {
 	int32_t		old_free_size;
-	void*		ret;
+	void		*ret;
 
 	old_free_size = *(int32_t*)(meta_ptr + old_size + 1);
 	if (get_blk_size(new_size) == get_blk_size(old_size))
 	{
 		*(int32_t*)meta_ptr = new_size;
-		*(int32_t*)(meta_ptr + new_size + 1) = old_free_size + -1 * (old_size - new_size);
+		*(int32_t*)(meta_ptr + new_size + 1) = old_free_size +
+			-1 * (old_size - new_size);
 		return (meta_ptr + sizeof(int32_t));
 	}
 	else
@@ -48,42 +50,47 @@ static void*			realloc_shrink(void* meta_ptr, size_t old_size, size_t new_size)
 	}
 }
 
-static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
+static void				*enlarge_l2l(void *meta_ptr, size_t old_size,
+		size_t new_size)
 {
-	void*			ret;
-	int32_t			next_zone_size;
 	size_t			page_nb;
+	void			*ret;
+
+	page_nb = old_size / getpagesize();
+	if (old_size % getpagesize() > 0)
+		++page_nb;
+	if (new_size + sizeof(int32_t) <= page_nb * getpagesize())
+	{
+		*(int32_t*)meta_ptr = new_size;
+		return (meta_ptr + sizeof(int32_t));
+	}
+	else
+	{
+		ret = malloc(new_size + sizeof(int32_t));
+		if (ret != NULL)
+		{
+			ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
+		}
+		free(meta_ptr + sizeof(int32_t));
+		return (ret);
+	}
+}
+
+static void				*realloc_enlarge(void *meta_ptr, size_t old_size,
+		size_t new_size)
+{
+	void			*ret;
+	int32_t			next_zone_size;
 
 	if (old_size > SMALL_MAX_SIZE)
-	{
-		/*
-		 * realloc LARGE -> LARGE
-		 */
-		page_nb = old_size / getpagesize();
-		if (old_size % getpagesize() > 0)
-			++page_nb;
-		if (new_size + sizeof(int32_t) <= page_nb * getpagesize()) // TODO : Le probleme est la
-		{
-			*(int32_t*)meta_ptr = new_size;
-			return (meta_ptr + sizeof(int32_t));
-		}
-		else
-		{
-			ret = malloc(new_size + sizeof(int32_t));
-			if (ret != NULL)
-			{
-				ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
-			}
-			free(meta_ptr + sizeof(int32_t));
-			return (ret);
-		}
-	}
+		return (enlarge_l2l(meta_ptr, old_size, new_size));
 	next_zone_size = *(int32_t*)(meta_ptr + old_size + sizeof(int32_t));
 	if (get_blk_size(new_size) == get_blk_size(old_size)
 			&& next_zone_size < 0 && -1 * next_zone_size >= (int32_t)new_size)
-	{ // TODO : Le probleme vient de la
+	{
 		*(int32_t*)(meta_ptr) = new_size;
-		*(int32_t*)(meta_ptr + new_size + sizeof(int32_t)) = next_zone_size + new_size;
+		*(int32_t*)(meta_ptr + new_size + sizeof(int32_t)) =
+			next_zone_size + new_size;
 		return (meta_ptr + sizeof(int32_t));
 	}
 	else
@@ -95,9 +102,9 @@ static void*			realloc_enlarge(void* meta_ptr, size_t old_size, size_t new_size)
 	}
 }
 
-void*					realloc(void* usr_ptr, size_t size)
+void					*realloc(void *usr_ptr, size_t size)
 {
-	void*		meta_ptr;
+	void		*meta_ptr;
 	int32_t		meta_len;
 
 	if (usr_ptr == NULL)
