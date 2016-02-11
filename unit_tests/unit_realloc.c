@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/02 13:09:49 by marene            #+#    #+#             */
-/*   Updated: 2016/02/10 15:29:59 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/11 11:51:19 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ static int		realloc_test_shrink()
 	int		i = 0;
 
 	ft_putendl("realloc_test_shrink()");
+	ft_putstr("seed : ");
+	ft_putnbr_recursive(seed, get_mult(seed));
+	ft_putchar('\n');
 	while (i < len)
 	{
 		ptr[i] = seed * i + seed;
@@ -93,7 +96,6 @@ static int		realloc_test_enlarge()
 		{
 			if (sizes[0] == 0)
 			{
-				ft_putendl("===TINY===");
 				sizes[0] = 1;
 			}
 		}
@@ -101,7 +103,6 @@ static int		realloc_test_enlarge()
 		{
 			if (sizes[1] == 0)
 			{
-				ft_putendl("===SMALL===");
 				sizes[1] = 1;
 			}
 		}
@@ -109,18 +110,10 @@ static int		realloc_test_enlarge()
 		{
 			if (sizes[2] == 0)
 			{
-				ft_putendl("===LARGE===");
 				sizes[2] = 1;
 			}
 		}
-		if (len * sizeof(int) == 40)
-			show_alloc_mem();
-		ft_putstr("reallocing for ");
-		ft_putnbr_recursive(len * sizeof(int), get_mult(len * sizeof(int)));
-		ft_putendl(" bytes");
 		ptr = realloc(ptr, sizeof(int) * len);
-		show_alloc_mem();
-		ft_putchar('\n');
 		if (test_integrity(seed, len - 1, ptr) == UNIT_NOK)
 			return (UNIT_NOK);
 		ptr[len - 1] = seed * (len - 1) + seed;
