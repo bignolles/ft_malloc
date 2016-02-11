@@ -59,6 +59,7 @@ typedef struct	metadata_s
 	void		**meta_pages_start[2];
 //	void		*meta_pages_end[2];
 	size_t		meta_len[2];
+	int32_t		max_size[2];
 }				metadata_t; // <- globale
 
 metadata_t		malloc_data_g;
@@ -76,7 +77,7 @@ void			show_alloc_mem(void);
 int				ft_putnbr_recursive(int32_t nb, int mult);
 int				get_mult(int32_t nb);
 void			putaddr(unsigned long int n);
-void			defragment_memory(blocksize_t blk_size);
+int32_t			defragment_memory(blocksize_t blk_size);
 
 void*			ft_malloc(size_t);
 

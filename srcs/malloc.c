@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/02/10 14:22:14 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/11 13:01:37 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ static void*			alloc(size_t size, blocksize_t blk_size)
 		}
 		else
 		{
+			ft_putendl("_malloc NULL 1");
 			return (NULL);
 		}
 	}
@@ -54,12 +55,12 @@ static void*			alloc(size_t size, blocksize_t blk_size)
 		{
 			i += len + sizeof(int32_t);
 		}
-		else if ((len == 0 && data + i + sizeof(int32_t) + size <= data_end) || -1 * len > (int32_t)(size + sizeof(int32_t)))
+		else if ((len == 0 && data + i + sizeof(int32_t) + size <= data_end) || -1 * len >= (int32_t)(size + sizeof(int32_t)))
 		{
 			if (size > alloc_maxsize_g)
 				alloc_maxsize_g = size;
 			*(int32_t*)(data + i) = (int32_t)size;
-			if (len != 0)
+			if (len != 0 && -1 * len > (int32_t)(size + sizeof(int32_t)))
 				*(int32_t*)(data + i + sizeof(int32_t) + size) = len + size + sizeof(int32_t);
 			return (data + i + sizeof(int32_t));
 		}
@@ -68,6 +69,7 @@ static void*			alloc(size_t size, blocksize_t blk_size)
 			i += (-1 * len) + sizeof(int32_t);
 		}
 	}
+			ft_putendl("_malloc NULL 2");
 	return (NULL);
 }
 
@@ -95,7 +97,7 @@ void*					malloc(size_t size)
 	if (size != 0)
 	{
 		blk_size = get_blk_size(size);
-		if (init[blk_size] == 0)
+		if (init[blk_size] == 0 || (blk_size < LARGE && malloc_data_g.datas[blk_size] == NULL))
 		{
 			alloc_maxsize_g = 0;
 			if (pages_init(blk_size) == M_OK)
@@ -104,11 +106,15 @@ void*					malloc(size_t size)
 			}
 			else
 			{
+			ft_putendl("_malloc NULL 2");
 				return (NULL);
 			}
 		}
 		return (alloc(size, blk_size));
 	}
 	else
+	{
+			ft_putendl("_malloc NULL 3");
 		return (NULL);
+	}
 }

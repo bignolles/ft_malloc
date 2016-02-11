@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/02/09 12:25:12 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/11 12:59:14 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	data_init(blocksize_t blk_size)
 		malloc_data_g.datas_len[TINY] = size;
 		malloc_data_g.datas[TINY] = malloc_data_g.data_tiny;
 		malloc_data_g.datas_end[TINY] = malloc_data_g.data_tiny + size; 
-		defragment_memory(TINY);
+		malloc_data_g.max_size[TINY] = defragment_memory(TINY);
 	}
 	if (blk_size == SMALL)
 	{
@@ -52,6 +52,7 @@ static int	data_init(blocksize_t blk_size)
 		malloc_data_g.datas_len[SMALL] = size;
 		malloc_data_g.datas[SMALL] = malloc_data_g.data_small;
 		malloc_data_g.datas_end[SMALL] = malloc_data_g.data_small + size - sizeof(void*);
+		malloc_data_g.max_size[SMALL] = defragment_memory(SMALL);
 	}
 	if (blk_size == LARGE)
 	{
