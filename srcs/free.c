@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ndatin <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/02/11 18:57:26 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/15 12:00:23 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,28 @@ static t_blocksize	get_blk_size(void *meta_ptr)
 {
 	if (meta_ptr >= g_malloc_data.datas[TINY]
 			&& meta_ptr < g_malloc_data.datas_end[TINY])
+	{
 		return (TINY);
+	}
 	else if (meta_ptr >= g_malloc_data.datas[SMALL]
 			&& meta_ptr < g_malloc_data.datas_end[SMALL])
+	{
 		return (SMALL);
+	}
 	else
+	{
 		return (LARGE);
+	}
+}
+
+static void			clear_meta(void *meta_ptr)
+{
+	int		i;
+
+	i = 0;
+	while (g_malloc_data.meta_large[i] != meta_ptr)
+		++i; // TODO : risque de segfault si i == max
+	g_malloc_data.meta_large[i] = NULL;
 }
 
 void				free(void *usr_ptr)
@@ -35,10 +51,8 @@ void				free(void *usr_ptr)
 	void			*meta_ptr;
 	int				to_unmap;
 	int				alloced;
-	int				i;
 	t_blocksize		blk_size;
 
-	i = 0;
 	meta_ptr = usr_ptr - sizeof(int32_t);
 	blk_size = get_blk_size(meta_ptr);
 	if (usr_ptr != NULL && meta_ptr != NULL && *(int32_t*)meta_ptr > 0
@@ -51,10 +65,8 @@ void				free(void *usr_ptr)
 	else if (usr_ptr != NULL)
 	{
 		alloced = *(int32_t*)meta_ptr;
-		to_unmap = (alloced / getpagesize() + (alloced % getpagesize() > 0))
-			* getpagesize();
-		while (g_malloc_data.meta_large[i] != meta_ptr)
-			++i; // TODO : risque de segfault si i == max
-		g_malloc_data.meta_large[i] = NULL;
+		to_unmap = alloced / getpagesize() + (alloced % getpagesize() > 0);
+		if (munmap(meta_ptr, to_unmap * getpagesize()) == 0)
+			clear_meta(meta_ptr);
 	}
 }
