@@ -6,7 +6,7 @@
 /*   By: ndatin <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/02/15 12:00:23 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/18 17:38:50 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,20 @@ static t_blocksize	get_blk_size(void *meta_ptr)
 	}
 }
 
-static void			clear_meta(void *meta_ptr)
+static int			clear_meta(void *meta_ptr)
 {
 	int		i;
 
 	i = 0;
-	while (g_malloc_data.meta_large[i] != meta_ptr)
-		++i; // TODO : risque de segfault si i == max
-	g_malloc_data.meta_large[i] = NULL;
+	while (i < g_malloc_data.meta_large_len
+			&& g_malloc_data.meta_large[i] != meta_ptr)
+		++i;
+	if (i < g_malloc_data.meta_large_len)
+	{
+		g_malloc_data.meta_large[i] = NULL;
+		return (M_OK);
+	}
+	return (M_NOK);
 }
 
 void				free(void *usr_ptr)
@@ -62,11 +68,10 @@ void				free(void *usr_ptr)
 			*(int32_t*)meta_ptr *= -1;
 		defragment_memory(blk_size);
 	}
-	else if (usr_ptr != NULL)
+	else if (usr_ptr != NULL && clear_meta(meta_ptr) == M_OK)
 	{
 		alloced = *(int32_t*)meta_ptr;
 		to_unmap = alloced / getpagesize() + (alloced % getpagesize() > 0);
-		if (munmap(meta_ptr, to_unmap * getpagesize()) == 0)
-			clear_meta(meta_ptr);
+		munmap(meta_ptr, to_unmap * getpagesize());
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/02/15 10:32:49 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/18 17:37:46 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,20 @@ static void			*alloc_large(size_t size)
 	int		i;
 
 	i = 0;
-	ret = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
-	if (ret != MAP_FAILED)
+	while (i < g_malloc_data.meta_large_len
+			&& g_malloc_data.meta_large[i] != NULL)
+		++i;
+	if (g_malloc_data.meta_large_len > i)
 	{
-		*(int32_t*)ret = (int32_t)size;
-		while (g_malloc_data.meta_large[i] != NULL)
-			++i;
-		g_malloc_data.meta_large[i] = ret;
-		// ^ TODO : Risque de segfault si i == max
-		return (ret + sizeof(int32_t));
+		ret = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
+		if (ret != MAP_FAILED)
+		{
+			*(int32_t*)ret = (int32_t)size;
+			g_malloc_data.meta_large[i] = ret;
+			return (ret + sizeof(int32_t));
+		}
 	}
-	else
-		return (NULL);
+	return (NULL);
 }
 
 static void			*alloc_tiny_small(void *new_meta, int32_t meta_len,

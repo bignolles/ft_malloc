@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/02/11 18:59:48 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/18 17:21:03 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 # define TINY_PAGES_NB		25
 # define SMALL_PAGES_NB		257
-# define LARGE_PAGES_NB		2
+# define LARGE_PAGES_NB		4
 
 # define TINY_ATOMIC		16
 # define SMALL_ATOMIC		997
@@ -47,13 +47,8 @@ typedef struct	s_metadata
 	void		*datas[2];
 	void		*datas_end[2];
 	size_t		datas_len[2];
-	void		**meta_tiny;
-	void		**meta_tiny_end;
-	void		**meta_small;
-	void		**meta_small_end;
 	void		**meta_large;
-	void		**meta_pages_start[2];
-	size_t		meta_len[2];
+	int			meta_large_len;
 	int32_t		max_size[2];
 }				t_metadata;
 

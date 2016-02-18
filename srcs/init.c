@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/02/12 15:58:03 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/18 17:35:17 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int			pages_init(t_blocksize blk_size)
 	{
 		size = LARGE_PAGES_NB * pagesize;
 		g_malloc_data.meta_large = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
+		g_malloc_data.meta_large_len = size / sizeof(void*);
 		if (g_malloc_data.meta_large == MAP_FAILED)
 			return (M_NOK);
 		ft_bzero(g_malloc_data.meta_large, size);
