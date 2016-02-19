@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/15 10:33:29 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/19 15:46:18 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,9 @@ static void				*realloc_enlarge(void *meta_ptr, size_t old_size,
 	int32_t			next_zone_size;
 
 	if (old_size > SMALL_MAX_SIZE)
+	{
 		return (enlarge_l2l(meta_ptr, old_size, new_size));
+	}
 	next_zone_size = *(int32_t*)(meta_ptr + old_size + sizeof(int32_t));
 	if (get_blk_size(new_size) == get_blk_size(old_size)
 			&& next_zone_size < 0 && -1 * next_zone_size >= (int32_t)new_size)

@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 10:44:51 by marene            #+#    #+#             */
-/*   Updated: 2016/02/19 14:44:36 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/19 14:48:58 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,38 +16,44 @@
 
 extern t_metadata		g_malloc_data;
 
-static void				dump_adress_content(void *addr, void *end, int32_t *len, char *meta)
+static void				adjust_len_and_meta(void *addr, int *len, char *meta)
+{
+	if (*len == 0 && *meta == 0)
+	{
+		*len = *(int32_t*)(addr);
+		if (*len != 0)
+		{
+			if (*len != 0)
+				ft_putstr((*len > 0) ? CLI_RED : CLI_BLUE);
+			*meta = 4;
+		}
+	}
+	if (*len > 0 && *meta == 0)
+	{
+		ft_putstr(CLI_GREEN);
+		--(*len);
+	}
+	else if (*len < 0 && *meta == 0)
+	{
+		ft_putstr(CLI_DEFAULT);
+		++(*len);
+	}
+	else if (*meta > 0)
+	{
+		ft_putstr((*len > 0) ? CLI_RED : CLI_BLUE);
+		--(*meta);
+	}
+}
+
+static void				dump_adress_content(void *addr, void *end,
+		int32_t *len, char *meta)
 {
 	int		i;
 
 	i = 0;
 	while (i < DUMP_INC && addr + i < end)
 	{
-		if (*len == 0 && *meta == 0)
-		{
-			*len = *(int32_t*)(addr + i);
-			if (*len != 0)
-			{
-				if (*len != 0)
-					ft_putstr((*len > 0) ? CLI_RED : CLI_BLUE);
-				*meta = 4;
-			}
-		}
-		if (*len > 0 && *meta == 0)
-		{
-			ft_putstr(CLI_GREEN);
-			--(*len);
-		}
-		else if (*len < 0 && *meta == 0)
-		{
-			ft_putstr(CLI_DEFAULT);
-			++(*len);
-		}
-		else if (*meta > 0)
-		{
-			ft_putstr((*len > 0) ? CLI_RED : CLI_BLUE);
-			--(*meta);
-		}
+		adjust_len_and_meta(addr + i, len, meta);
 		ft_putchar_hex(addr + i);
 		ft_putchar(' ');
 		ft_putstr(CLI_DEFAULT);
@@ -97,7 +103,8 @@ static void				dump_large(void)
 		{
 			ft_putendl("-------------------------------------");
 			len = *(int32_t*)it;
-			real_len = (len / getpagesize() + (len % getpagesize() > 0)) * getpagesize();
+			real_len = (len / getpagesize() + (len % getpagesize() > 0))
+				* getpagesize();
 			dump_tiny_small(it, it + real_len);
 			ft_putendl("-------------------------------------");
 		}

@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/02/18 17:37:46 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/19 17:34:59 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,10 +112,14 @@ void				*malloc(size_t size)
 				init[blk_size] = 1;
 			}
 			else
+			{
 				return (NULL);
+			}
 		}
 		return (alloc(size, blk_size));
 	}
 	else
+	{
 		return (NULL);
+	}
 }

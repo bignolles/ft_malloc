@@ -6,7 +6,7 @@
 /*   By: ndatin <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/02/18 17:38:50 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/19 17:32:32 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,14 @@ void				free(void *usr_ptr)
 
 	meta_ptr = usr_ptr - sizeof(int32_t);
 	blk_size = get_blk_size(meta_ptr);
-	if (usr_ptr != NULL && meta_ptr != NULL && *(int32_t*)meta_ptr > 0
-			&& blk_size < LARGE)
+	if (blk_size < LARGE && usr_ptr != NULL && meta_ptr != NULL
+			&& *(int32_t*)meta_ptr > 0)
 	{
 		if (*(int32_t*)meta_ptr > 0)
 			*(int32_t*)meta_ptr *= -1;
 		defragment_memory(blk_size);
 	}
-	else if (usr_ptr != NULL && clear_meta(meta_ptr) == M_OK)
+	else if (usr_ptr != NULL && meta_ptr != NULL && clear_meta(meta_ptr) == M_OK)
 	{
 		alloced = *(int32_t*)meta_ptr;
 		to_unmap = alloced / getpagesize() + (alloced % getpagesize() > 0);
