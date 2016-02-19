@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/02/18 17:21:03 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/19 12:07:56 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,13 @@
 
 # define TINY_MAX_SIZE		994
 # define SMALL_MAX_SIZE		4096
+
+# define CLI_DEFAULT		"\e[39m"
+# define CLI_RED			"\e[31m"
+# define CLI_BLUE			"\e[34m"
+# define CLI_GREEN			"\e[32m"
+
+# define DUMP_INC			(int)sizeof(void*)
 
 typedef enum	e_blocksize
 {
@@ -67,5 +74,6 @@ void			show_alloc_mem(void);
 int				get_mult(int32_t nb);
 void			putaddr(unsigned long int n);
 int32_t			defragment_memory(t_blocksize blk_size);
+void			dump_alloc_mem(t_blocksize blk_size);
 
 #endif

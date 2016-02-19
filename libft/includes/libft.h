@@ -6,7 +6,7 @@
 /*   By: evignol <evignol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/04 15:24:27 by evignol           #+#    #+#             */
-/*   Updated: 2016/02/11 18:45:37 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/19 13:16:59 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,5 +154,7 @@ void				*tryptr(void *err, void *res, char *error);
 void				putaddr(unsigned long int ptr);
 void				ft_putnbr_recursive(int32_t nb, int mult);
 int					get_mult(int32_t nb);
+void				ft_putchar_hex(unsigned char *c);
+void				ft_putint_hex(unsigned int *c);
 
 #endif

@@ -11,6 +11,7 @@ LIBFT_DIR =		./libft/
 UNIT_DIR =		./unit_tests/
 LIBFT_NAME =	libft.a
 SRCS =			defragment_memory.c\
+				dump_alloc_mem.c\
 				free.c\
 				init.c\
 				malloc.c\
