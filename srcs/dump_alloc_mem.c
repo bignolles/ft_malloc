@@ -6,10 +6,11 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 10:44:51 by marene            #+#    #+#             */
-/*   Updated: 2016/02/19 13:50:54 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/19 14:44:36 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
 #include "libft.h"
 #include "ft_malloc.h"
 
@@ -70,7 +71,8 @@ static void				dump_tiny_small(void *data, void *end)
 		if (i != DUMP_INC && len == 0 && meta == 0)
 		{
 			len = *(int32_t*)(data + i);
-			meta = 4;
+			if (len != 0)
+				meta = 4;
 		}
 		putaddr((unsigned long int)(data + i));
 		ft_putchar('\t');
@@ -80,11 +82,34 @@ static void				dump_tiny_small(void *data, void *end)
 	}
 }
 
+static void				dump_large(void)
+{
+	int		i;
+	void	*it;
+	int		real_len;
+	int		len;
+
+	i = 0;
+	while (i < g_malloc_data.meta_large_len)
+	{
+		it = g_malloc_data.meta_large[i];
+		if (it != NULL)
+		{
+			ft_putendl("-------------------------------------");
+			len = *(int32_t*)it;
+			real_len = (len / getpagesize() + (len % getpagesize() > 0)) * getpagesize();
+			dump_tiny_small(it, it + real_len);
+			ft_putendl("-------------------------------------");
+		}
+		++i;
+	}
+}
+
 void					dump_alloc_mem(t_blocksize blk_size)
 {
 	if (blk_size < LARGE)
 		dump_tiny_small(g_malloc_data.datas[blk_size],
 				g_malloc_data.datas_end[blk_size]);
 	else
-		dump_tiny_small(NULL, NULL);
+		dump_large();
 }
