@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 14:57:51 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/22 18:57:11 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 # define CLI_BLUE			"\e[34m"
 # define CLI_GREEN			"\e[32m"
 
-# define DUMP_INC			(int)sizeof(void*)
+# define DUMP_INC			(int)(2 * sizeof(void*))
 
 # define RECORD_FILE_NAME	"./libft_malloc.record"
 

@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 10:44:51 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 13:25:35 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/22 18:51:46 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static void				dump_adress_content(void *addr, void *end,
 		ft_putstr(CLI_DEFAULT);
 		++i;
 	}
+	ft_putstr_dump(addr, DUMP_INC);
 }
 
 static void				dump_tiny_small(void *data, void *end)
@@ -84,7 +85,6 @@ static void				dump_tiny_small(void *data, void *end)
 		ft_putchar('\t');
 		dump_adress_content(data + i, end, &len, &meta);
 		i += DUMP_INC;
-		ft_putchar('\n');
 	}
 }
 

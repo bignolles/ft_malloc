@@ -6,7 +6,7 @@
 #    By: evignol <evignol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/02/04 15:24:19 by evignol           #+#    #+#              #
-#    Updated: 2016/02/19 11:24:02 by marene           ###   ########.fr        #
+#    Updated: 2016/02/22 18:47:57 by marene           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -95,6 +95,7 @@ SRC =	ft_memset.c			\
 		ft_putaddr.c		\
 		ft_putnbr_recursive.c\
 		ft_putchar_hex.c\
+		ft_putstr_dump.c\
 		error.c
 
 OBJ = $(SRC:.c=.o)
@@ -119,5 +120,5 @@ $(NAME): $(OBJ)
 	@echo "\033[1;32mLibft done.\033[00m"
 
 %.o: %.c
-	@echo "\033[1;34mCompiling libft..\033[00m"
-	@gcc $(SRC) -Wall -Werror -Wextra -g -I./includes/ -c $<
+#	@echo "\033[1;34mCompiling libft..\033[00m"
+	gcc $< -Wall -Werror -Wextra -g -I./includes/ -c -o $@

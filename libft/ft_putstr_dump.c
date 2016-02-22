@@ -1,35 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putaddr.c                                       :+:      :+:    :+:   */
+/*   ft_putstr_dump.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/02/11 18:37:04 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 15:19:13 by marene           ###   ########.fr       */
+/*   Created: 2016/02/22 18:48:04 by marene            #+#    #+#             */
+/*   Updated: 2016/02/22 18:50:46 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
 #include "libft.h"
 
-void			putaddr(unsigned long int n, int fd)
+void		ft_putstr_dump(char *str, int len)
 {
-	char			res[18];
-	int				i;
-	char		base16[16];
+	int		i;
 
-	ft_strcpy(base16, "0123456789abcdef");
-	ft_memset(res, '0', 18);
-	res[0] = '0';
-	res[1] = 'x';
-	i = 16 - 1;
-	while (n > 0 && i >= 0)
+	i = 0;
+	while (i < len)
 	{
-		res[i] = base16[n % 16];
-		n = n - (n % 16);
-		n /= 16;
-		i--;
+		if (ft_isprint(str[i]))
+			ft_putchar(str[i]);
+		else
+			ft_putchar('.');
+		++i;
 	}
-	write(fd, res, 16);
+	ft_putchar('\n');
 }
