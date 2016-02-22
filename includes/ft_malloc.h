@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/02/19 12:07:56 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/22 14:57:51 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,12 @@
 
 # define DUMP_INC			(int)sizeof(void*)
 
+# define RECORD_FILE_NAME	"./libft_malloc.record"
+
+/*
+ * Comment RECORD_FILE_NAME define to disable recording of allocations
+*/
+
 typedef enum	e_blocksize
 {
 	TINY = 0,
@@ -57,6 +63,7 @@ typedef struct	s_metadata
 	void		**meta_large;
 	int			meta_large_len;
 	int32_t		max_size[2];
+	int			record_fd;
 }				t_metadata;
 
 t_metadata		g_malloc_data;
@@ -70,10 +77,12 @@ size_t			get_metapagelen(t_blocksize size);
 void			*metadata_retrieve(void *usr_ptr, t_blocksize *blk_size);
 int				metadata_add(void *usr_ptr, t_blocksize blk_size);
 int				metadata_remove(void *usr_ptr, t_blocksize blk_size);
-void			show_alloc_mem(void);
 int				get_mult(int32_t nb);
-void			putaddr(unsigned long int n);
+void			show_alloc_mem(void);
+void			display_allocs(int fd);
 int32_t			defragment_memory(t_blocksize blk_size);
 void			dump_alloc_mem(t_blocksize blk_size);
+int				record_allocations_init();
+void			record_allocations();
 
 #endif

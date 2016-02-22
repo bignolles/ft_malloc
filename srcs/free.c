@@ -6,7 +6,7 @@
 /*   By: ndatin <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/02/19 17:32:32 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/22 14:41:40 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void				free(void *usr_ptr)
 	int				alloced;
 	t_blocksize		blk_size;
 
+	record_allocations(__func__);
 	meta_ptr = usr_ptr - sizeof(int32_t);
 	blk_size = get_blk_size(meta_ptr);
 	if (blk_size < LARGE && usr_ptr != NULL && meta_ptr != NULL
@@ -74,4 +75,5 @@ void				free(void *usr_ptr)
 		to_unmap = alloced / getpagesize() + (alloced % getpagesize() > 0);
 		munmap(meta_ptr, to_unmap * getpagesize());
 	}
+	record_allocations(NULL);
 }

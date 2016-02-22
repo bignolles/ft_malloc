@@ -16,6 +16,7 @@ SRCS =			defragment_memory.c\
 				init.c\
 				malloc.c\
 				realloc.c\
+				record.c\
 				show_alloc_mem.c
 OBJ =			$(SRCS:.c=.o)
 UNIT_SRCS =		main.c\

@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 10:44:51 by marene            #+#    #+#             */
-/*   Updated: 2016/02/19 14:48:58 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/22 13:25:35 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static void				dump_tiny_small(void *data, void *end)
 			if (len != 0)
 				meta = 4;
 		}
-		putaddr((unsigned long int)(data + i));
+		putaddr((unsigned long int)(data + i), 1);
 		ft_putchar('\t');
 		dump_adress_content(data + i, end, &len, &meta);
 		i += DUMP_INC;
