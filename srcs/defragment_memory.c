@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/04 11:38:23 by marene            #+#    #+#             */
-/*   Updated: 2016/02/11 18:57:22 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/23 14:43:57 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void			*frag_concat(void *it, void **defrag, int32_t frag_size,
 	return (it);
 }
 
-int32_t				defragment_memory(t_blocksize blk_size)
+int32_t				defragment_memory(t_blocksize blk_size, void *meta_ptr)
 {
 	void			*it;
 	void			*defrag;
@@ -59,7 +59,11 @@ int32_t				defragment_memory(t_blocksize blk_size)
 			if (tmp <= 0)
 				it = frag_regroup(it, &defrag, -1 * tmp, &size);
 			else
+			{
 				it = frag_concat(it, &defrag, tmp, &size);
+				if (it > meta_ptr)
+					return (M_OK);
+			}
 		}
 	}
 	if (defrag != NULL)

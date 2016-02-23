@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 14:43:12 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/23 13:24:31 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,8 @@ void					*realloc(void *usr_ptr, size_t size)
 		return (NULL);
 	}
 	meta_ptr = usr_ptr - sizeof(int32_t);
+	free(meta_ptr); //        |
+	return (malloc(size)); // |-> Olololo
 	meta_len = *(int32_t*)(meta_ptr);
 	if (meta_len < (int32_t)size)
 	{

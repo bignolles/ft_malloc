@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 18:57:11 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/23 18:01:24 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int				metadata_remove(void *usr_ptr, t_blocksize blk_size);
 int				get_mult(int32_t nb);
 void			show_alloc_mem(void);
 void			display_allocs(int fd);
-int32_t			defragment_memory(t_blocksize blk_size);
+int32_t			defragment_memory(t_blocksize blk_size, void *meta_ptr);
 void			dump_alloc_mem(t_blocksize blk_size);
 int				record_allocations_init();
 void			record_allocations();

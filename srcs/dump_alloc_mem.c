@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 10:44:51 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 18:51:46 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/22 19:02:28 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,9 @@ static void				dump_large(void)
 
 void					dump_alloc_mem(t_blocksize blk_size)
 {
-	if (blk_size < LARGE)
+	if (blk_size < LARGE && g_malloc_data.datas[blk_size] != NULL)
 		dump_tiny_small(g_malloc_data.datas[blk_size],
 				g_malloc_data.datas_end[blk_size]);
-	else
+	else if (g_malloc_data.meta_large != NULL)
 		dump_large();
 }

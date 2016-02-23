@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/02/18 17:35:17 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/23 14:44:46 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	init_tiny(void)
 	g_malloc_data.datas_len[TINY] = size;
 	g_malloc_data.datas[TINY] = g_malloc_data.data_tiny;
 	g_malloc_data.datas_end[TINY] = g_malloc_data.data_tiny + size;
-	g_malloc_data.max_size[TINY] = defragment_memory(TINY);
+	g_malloc_data.max_size[TINY] = defragment_memory(TINY, g_malloc_data.datas_end[TINY]);
 	return (M_OK);
 }
 
@@ -51,7 +51,7 @@ static int	init_small(void)
 	g_malloc_data.datas_len[SMALL] = size;
 	g_malloc_data.datas[SMALL] = g_malloc_data.data_small;
 	g_malloc_data.datas_end[SMALL] = g_malloc_data.data_small + size;
-	g_malloc_data.max_size[SMALL] = defragment_memory(SMALL);
+	g_malloc_data.max_size[SMALL] = defragment_memory(SMALL, g_malloc_data.datas_end[SMALL]);
 	return (M_OK);
 }
 

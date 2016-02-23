@@ -6,7 +6,7 @@
 /*   By: ndatin <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 14:41:40 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/23 18:01:09 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void				free(void *usr_ptr)
 	{
 		if (*(int32_t*)meta_ptr > 0)
 			*(int32_t*)meta_ptr *= -1;
-		defragment_memory(blk_size);
+		defragment_memory(blk_size, meta_ptr);
 	}
 	else if (usr_ptr != NULL && meta_ptr != NULL && clear_meta(meta_ptr) == M_OK)
 	{
