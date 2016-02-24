@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/23 13:24:31 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/24 14:22:35 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void				*realloc_shrink(void *meta_ptr, size_t old_size,
 		*(int32_t*)meta_ptr = new_size;
 		*(int32_t*)(meta_ptr + new_size + 1) = old_free_size +
 			-1 * (old_size - new_size);
-		record_allocations(NULL);
+		CALL_RECORD(NULL);
 		return (meta_ptr + sizeof(int32_t));
 	}
 	else
@@ -47,7 +47,7 @@ static void				*realloc_shrink(void *meta_ptr, size_t old_size,
 		if ((ret = malloc(new_size)) != NULL)
 			ft_memcpy(ret, meta_ptr + sizeof(int32_t), new_size);
 		free(meta_ptr + sizeof(int32_t));
-		record_allocations(NULL);
+		CALL_RECORD(NULL);
 		return (ret);
 	}
 }
@@ -64,7 +64,7 @@ static void				*enlarge_l2l(void *meta_ptr, size_t old_size,
 	if (new_size + sizeof(int32_t) <= page_nb * getpagesize())
 	{
 		*(int32_t*)meta_ptr = new_size;
-		record_allocations(NULL);
+		CALL_RECORD(NULL);
 		return (meta_ptr + sizeof(int32_t));
 	}
 	else
@@ -75,7 +75,7 @@ static void				*enlarge_l2l(void *meta_ptr, size_t old_size,
 			ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
 		}
 		free(meta_ptr + sizeof(int32_t));
-		record_allocations(NULL);
+		CALL_RECORD(NULL);
 		return (ret);
 	}
 }
@@ -88,17 +88,19 @@ static void				*realloc_enlarge(void *meta_ptr, size_t old_size,
 
 	if (old_size > SMALL_MAX_SIZE)
 	{
-		record_allocations(NULL);
 		return (enlarge_l2l(meta_ptr, old_size, new_size));
 	}
 	next_zone_size = *(int32_t*)(meta_ptr + old_size + sizeof(int32_t));
 	if (get_blk_size(new_size) == get_blk_size(old_size)
-			&& next_zone_size < 0 && -1 * next_zone_size >= (int32_t)new_size)
+			&& next_zone_size < 0 && -1 * next_zone_size  + old_size > new_size)
 	{
+		//TODO : This part is fucked up somehow, be it optimization (doubt it) or plain buggery
+//		free(meta_ptr + sizeof(int32_t)); // |
+//		return (malloc(new_size)); //        |-> Olololo
 		*(int32_t*)(meta_ptr) = new_size;
 		*(int32_t*)(meta_ptr + new_size + sizeof(int32_t)) =
-			next_zone_size + new_size;
-		record_allocations(NULL);
+			(int32_t)new_size - (-1 * next_zone_size + old_size);
+		CALL_RECORD(NULL);
 		return (meta_ptr + sizeof(int32_t));
 	}
 	else
@@ -106,7 +108,7 @@ static void				*realloc_enlarge(void *meta_ptr, size_t old_size,
 		if ((ret = malloc(new_size)) != NULL)
 			ft_memcpy(ret, meta_ptr + sizeof(int32_t), old_size);
 		free(meta_ptr + sizeof(int32_t));
-		record_allocations(NULL);
+		CALL_RECORD(NULL);
 		return (ret);
 	}
 }
@@ -116,20 +118,18 @@ void					*realloc(void *usr_ptr, size_t size)
 	void		*meta_ptr;
 	int32_t		meta_len;
 
-	record_allocations(__func__);
+	CALL_RECORD(__func__);
 	if (usr_ptr == NULL)
 	{
-		record_allocations(NULL);
+		CALL_RECORD(NULL);
 		return (malloc(size));
 	}
 	else if (size == 0)
 	{
-		record_allocations(NULL);
+		CALL_RECORD(NULL);
 		return (NULL);
 	}
 	meta_ptr = usr_ptr - sizeof(int32_t);
-	free(meta_ptr); //        |
-	return (malloc(size)); // |-> Olololo
 	meta_len = *(int32_t*)(meta_ptr);
 	if (meta_len < (int32_t)size)
 	{
@@ -139,6 +139,6 @@ void					*realloc(void *usr_ptr, size_t size)
 	{
 		return (realloc_shrink(meta_ptr, meta_len, size));
 	}
-	record_allocations(NULL);
+	CALL_RECORD(NULL);
 	return (usr_ptr);
 }

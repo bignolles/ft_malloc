@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 18:23:23 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/24 13:43:44 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,34 +33,29 @@ static void			*alloc_large(size_t size)
 		{
 			*(int32_t*)ret = (int32_t)size;
 			g_malloc_data.meta_large[i] = ret;
-			record_allocations(NULL);
+			CALL_RECORD(NULL);
 			return (ret + sizeof(int32_t));
 		}
 	}
-	record_allocations(NULL);
+	CALL_RECORD(NULL);
 	return (NULL);
 }
 
 static void			*alloc_tiny_small(void *new_meta, int32_t meta_len,
-		int32_t size, int fd)
+		int32_t size)
 {
+	//TODO check ALL files for leftover output functions else than CALL_RECORD
 	*(int32_t*)new_meta = size;
 	if (meta_len < 0 && -1 * meta_len > (int32_t)(size + sizeof(int32_t)))
 	{
 		*(int32_t*)(new_meta + sizeof(int32_t) + size) =
 			meta_len + size + sizeof(int32_t);
 	}
-	ft_putstr_fd("new meta : ", fd);
-	putaddr((unsigned long int)new_meta, fd);
-	ft_putchar_fd('\n', fd);
-	ft_putstr_fd("meta_len = ", fd);
-	ft_putnbr_recursive(meta_len, get_mult(meta_len), fd);
-	ft_putchar_fd('\n', fd);
-	record_allocations("alloc_success");
+	CALL_RECORD(NULL);
 	return (new_meta + sizeof(int32_t));
 }
 
-static void			*alloc(size_t size, t_blocksize blk_size, int fd)
+static void			*alloc(size_t size, t_blocksize blk_size)
 {
 	int		i;
 	int32_t	len;
@@ -70,7 +65,7 @@ static void			*alloc(size_t size, t_blocksize blk_size, int fd)
 	i = 0;
 	if (blk_size == LARGE)
 	{
-		record_allocations(NULL);
+		CALL_RECORD(NULL);
 		return (alloc_large(size));
 	}
 	data = g_malloc_data.datas[blk_size];
@@ -84,12 +79,12 @@ static void			*alloc(size_t size, t_blocksize blk_size, int fd)
 		else if ((len == 0 && data + i + sizeof(int32_t) + size <= data_end)
 				|| -1 * len > (int32_t)(size + sizeof(int32_t)))
 		{
-			return (alloc_tiny_small(data + i, len, (int32_t)size, fd));
+			return (alloc_tiny_small(data + i, len, (int32_t)size));
 		}
 		else
 			i += (-1 * len) + sizeof(int32_t);
 	}
-	record_allocations("alloc NULL");
+	CALL_RECORD(NULL);
 	return (NULL);
 }
 
@@ -127,19 +122,17 @@ void				*malloc(size_t size)
 			}
 			else
 			{
-				record_allocations(__func__);
-				record_allocations(NULL);
+				CALL_RECORD(__func__);
+				CALL_RECORD(NULL);
 				return (NULL);
 			}
 		}
-		ft_putnbr_recursive(size, get_mult(size), g_malloc_data.record_fd);
-		ft_putstr_fd(" : ", g_malloc_data.record_fd);
-		record_allocations(__func__);
-		return (alloc(size, blk_size, g_malloc_data.record_fd));
+		CALL_RECORD(__func__);
+		return (alloc(size, blk_size));
 	}
 	else
 	{
-		record_allocations(NULL);
+		CALL_RECORD(NULL);
 		return (NULL);
 	}
 }
