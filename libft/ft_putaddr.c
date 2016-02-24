@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:37:04 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 15:19:13 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/24 18:47:40 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void			putaddr(unsigned long int n, int fd)
 {
 	char			res[18];
 	int				i;
-	char		base16[16];
+	char			base16[16];
 
 	ft_strcpy(base16, "0123456789abcdef");
 	ft_memset(res, '0', 18);
