@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/02/24 13:43:44 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/24 18:46:18 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ static void			*alloc_large(size_t size)
 static void			*alloc_tiny_small(void *new_meta, int32_t meta_len,
 		int32_t size)
 {
-	//TODO check ALL files for leftover output functions else than CALL_RECORD
 	*(int32_t*)new_meta = size;
 	if (meta_len < 0 && -1 * meta_len > (int32_t)(size + sizeof(int32_t)))
 	{
@@ -64,13 +63,9 @@ static void			*alloc(size_t size, t_blocksize blk_size)
 
 	i = 0;
 	if (blk_size == LARGE)
-	{
-		CALL_RECORD(NULL);
 		return (alloc_large(size));
-	}
 	data = g_malloc_data.datas[blk_size];
 	data_end = g_malloc_data.datas_end[blk_size];
-	len = 0;
 	while (data + i < data_end)
 	{
 		len = *(int32_t*)(data + i);
@@ -122,17 +117,11 @@ void				*malloc(size_t size)
 			}
 			else
 			{
-				CALL_RECORD(__func__);
-				CALL_RECORD(NULL);
 				return (NULL);
 			}
 		}
-		CALL_RECORD(__func__);
 		return (alloc(size, blk_size));
 	}
 	else
-	{
-		CALL_RECORD(NULL);
 		return (NULL);
-	}
 }

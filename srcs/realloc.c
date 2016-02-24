@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/02/24 14:22:35 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/24 18:45:46 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,8 @@ static void				*realloc_enlarge(void *meta_ptr, size_t old_size,
 	}
 	next_zone_size = *(int32_t*)(meta_ptr + old_size + sizeof(int32_t));
 	if (get_blk_size(new_size) == get_blk_size(old_size)
-			&& next_zone_size < 0 && -1 * next_zone_size  + old_size > new_size)
+			&& next_zone_size < 0 && -1 * next_zone_size + old_size > new_size)
 	{
-		//TODO : This part is fucked up somehow, be it optimization (doubt it) or plain buggery
-//		free(meta_ptr + sizeof(int32_t)); // |
-//		return (malloc(new_size)); //        |-> Olololo
 		*(int32_t*)(meta_ptr) = new_size;
 		*(int32_t*)(meta_ptr + new_size + sizeof(int32_t)) =
 			(int32_t)new_size - (-1 * next_zone_size + old_size);
@@ -132,13 +129,9 @@ void					*realloc(void *usr_ptr, size_t size)
 	meta_ptr = usr_ptr - sizeof(int32_t);
 	meta_len = *(int32_t*)(meta_ptr);
 	if (meta_len < (int32_t)size)
-	{
 		return (realloc_enlarge(meta_ptr, meta_len, size));
-	}
 	else if (meta_len > (int32_t)size)
-	{
 		return (realloc_shrink(meta_ptr, meta_len, size));
-	}
 	CALL_RECORD(NULL);
 	return (usr_ptr);
 }

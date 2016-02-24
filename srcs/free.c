@@ -6,7 +6,7 @@
 /*   By: ndatin <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/02/24 10:38:21 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/24 16:16:22 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,26 +54,26 @@ static int			clear_meta(void *meta_ptr)
 
 void				free(void *usr_ptr)
 {
-	void			*meta_ptr;
+	void			*m_ptr;
 	int				to_unmap;
 	int				alloced;
 	t_blocksize		blk_size;
 
 	CALL_RECORD(__func__);
-	meta_ptr = usr_ptr - sizeof(int32_t);
-	blk_size = get_blk_size(meta_ptr);
-	if (blk_size < LARGE && usr_ptr != NULL && meta_ptr != NULL
-			&& *(int32_t*)meta_ptr > 0)
+	m_ptr = usr_ptr - sizeof(int32_t);
+	blk_size = get_blk_size(m_ptr);
+	if (blk_size < LARGE && usr_ptr != NULL && m_ptr != NULL
+			&& *(int32_t*)m_ptr > 0)
 	{
-		if (*(int32_t*)meta_ptr > 0)
-			*(int32_t*)meta_ptr *= -1;
-		defragment_memory(blk_size, meta_ptr);
+		if (*(int32_t*)m_ptr > 0)
+			*(int32_t*)m_ptr *= -1;
+		defragment_memory(blk_size, m_ptr);
 	}
-	else if (usr_ptr != NULL && meta_ptr != NULL && clear_meta(meta_ptr) == M_OK)
+	else if (usr_ptr != NULL && m_ptr != NULL && clear_meta(m_ptr) == M_OK)
 	{
-		alloced = *(int32_t*)meta_ptr;
+		alloced = *(int32_t*)m_ptr;
 		to_unmap = alloced / getpagesize() + (alloced % getpagesize() > 0);
-		munmap(meta_ptr, to_unmap * getpagesize());
+		munmap(m_ptr, to_unmap * getpagesize());
 	}
 	CALL_RECORD(NULL);
 }

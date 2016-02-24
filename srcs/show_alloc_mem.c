@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 17:43:53 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 16:59:24 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/24 18:44:53 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void		print_tiny_small(char *title, void *it, void *end, int fd)
 	int32_t		size;
 	int32_t		total_size;
 
-	ft_putendl_fd("---------------------------------------------------------", fd);
+	ft_putendl_fd("------------------------------------------------------", fd);
 	total_size = 0;
 	ft_putstr_fd(title, fd);
 	putaddr((unsigned long int)it, fd);
@@ -63,11 +63,7 @@ static void		print_tiny_small(char *title, void *it, void *end, int fd)
 		}
 		it += (size + sizeof(int32_t));
 	}
-	ft_putendl_fd("---------------------------------------------------------", fd);
-	(void)title;
-	(void)it;
-	(void)end;
-	(void)fd;
+	ft_putendl_fd("------------------------------------------------------", fd);
 }
 
 static void		print_large(int fd)
@@ -79,7 +75,7 @@ static void		print_large(int fd)
 
 	i = 0;
 	max = (LARGE_PAGES_NB * getpagesize()) / sizeof(void*);
-	ft_putendl_fd("---------------------------------------------------------", fd);
+	ft_putendl_fd("------------------------------------------------------", fd);
 	ft_putendl_fd("LARGE", fd);
 	while (i < max)
 	{
@@ -91,7 +87,7 @@ static void		print_large(int fd)
 		}
 		++i;
 	}
-	ft_putendl_fd("---------------------------------------------------------", fd);
+	ft_putendl_fd("------------------------------------------------------", fd);
 }
 
 void			display_allocs(int fd)

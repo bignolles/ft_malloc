@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/04 11:38:23 by marene            #+#    #+#             */
-/*   Updated: 2016/02/23 14:43:57 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/24 16:15:23 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,20 @@ int32_t				defragment_memory(t_blocksize blk_size, void *meta_ptr)
 	void			*it;
 	void			*defrag;
 	int32_t			size;
-	int32_t			tmp;
 
 	defrag = NULL;
 	size = 0;
 	if (blk_size < LARGE)
 	{
 		it = g_malloc_data.datas[blk_size];
-		tmp = 0;
 		defrag = NULL;
 		while (it < g_malloc_data.datas_end[blk_size])
 		{
-			tmp = *(int32_t*)it;
-			if (tmp <= 0)
-				it = frag_regroup(it, &defrag, -1 * tmp, &size);
+			if (*(int32_t*)it <= 0)
+				it = frag_regroup(it, &defrag, -1 * *(int32_t*)it, &size);
 			else
 			{
-				it = frag_concat(it, &defrag, tmp, &size);
+				it = frag_concat(it, &defrag, *(int32_t*)it, &size);
 				if (it > meta_ptr)
 					return (M_OK);
 			}

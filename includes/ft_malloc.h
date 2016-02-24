@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/02/24 11:23:09 by marene           ###   ########.fr       */
+/*   Updated: 2016/02/24 18:43:52 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define DUMP_INC			(int)(2 * sizeof(void*))
 
 /*
- * # define RECORD_FILE_NAME	"./libft_malloc.record"
+** # define RECORD_FILE_NAME	"./libft_malloc.record"
 */
 # ifdef RECORD_FILE_NAME
 #  define CALL_RECORD(x) record_allocations(x)
@@ -49,7 +49,7 @@
 # endif
 
 /*
- * Comment RECORD_FILE_NAME define to disable recording of allocations
+** Comment RECORD_FILE_NAME define to disable recording of allocations
 */
 
 typedef enum	e_blocksize
