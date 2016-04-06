@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/02/24 18:46:18 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/06 18:37:40 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,18 @@ static void			*alloc_tiny_small(void *new_meta, int32_t meta_len,
 
 static void			*alloc(size_t size, t_blocksize blk_size)
 {
+	/*
 	int		i;
-	int32_t	len;
 	void	*data;
 	void	*data_end;
+	*/
+	int32_t		len;
+	void		*new_meta;
 
-	i = 0;
 	if (blk_size == LARGE)
 		return (alloc_large(size));
+	/*
+	i = 0;
 	data = g_malloc_data.datas[blk_size];
 	data_end = g_malloc_data.datas_end[blk_size];
 	while (data + i < data_end)
@@ -78,6 +82,13 @@ static void			*alloc(size_t size, t_blocksize blk_size)
 		}
 		else
 			i += (-1 * len) + sizeof(int32_t);
+	}
+	*/
+	new_meta = find_allocable_segment(size, blk_size);
+	if (new_meta != NULL)
+	{
+		len = *(int32_t*)new_meta;
+		return (alloc_tiny_small(new_meta, len, (int32_t)size));
 	}
 	CALL_RECORD(NULL);
 	return (NULL);
@@ -104,6 +115,8 @@ void				*malloc(size_t size)
 	t_blocksize		blk_size;
 	static int		init[3] = {0, 0};
 
+	t_header	*head;
+
 	if (size != 0)
 	{
 		blk_size = get_blk_size(size);
@@ -114,6 +127,11 @@ void				*malloc(size_t size)
 			{
 				record_allocations_init();
 				init[blk_size] = 1;
+				head = (t_header*)g_malloc_data.datas[blk_size] - sizeof(t_header);
+				if (head->magic != (M_MAGIC ^ (unsigned long int)head))
+				{
+					exit(42);
+				}
 			}
 			else
 			{

@@ -17,12 +17,10 @@ SRCS =			defragment_memory.c\
 				malloc.c\
 				realloc.c\
 				record.c\
-				show_alloc_mem.c
+				show_alloc_mem.c\
+				find_allocable_segment.c\
+				header_change_segment.c
 OBJ =			$(SRCS:.c=.o)
-UNIT_SRCS =		main.c\
-				unit_malloc.c\
-				unit_realloc.c
-UNIT_OBJS =		$(UNIT_SRCS:.c=.o)
 LIBFT =			$(LIBFT_DIR)libft.a
 CC =			clang
 CFLAGS =		-Wall -Wextra -Werror -g -I $(INCLUDES_DIR) -I $(LIBFT_DIR)includes -o
@@ -43,11 +41,6 @@ $(NAME): $(addprefix $(OBJ_DIR), $(OBJ))
 
 $(OBJ_DIR)%.o: $(SRCS_DIR)%.c
 	$(CC) $(CFLAGS) $@ -c $<
-	
-unit: $(UNIT_NAME)
-
-$(UNIT_NAME): 
-	$(CC) $(CFLAGS) $@ -L $(LIBFT_DIR) -lft $(LINKNAME) $(addprefix $(UNIT_DIR), $(UNIT_SRCS))
 
 clean:
 	rm -rf $(OBJ_DIR)
@@ -59,6 +52,6 @@ fclean: clean
 re: fclean all
 
 norme:
-	norminette $(addprefix $(SRCS_DIR), $(SRCS))
+	norminette $(addprefix $(SRCS_DIR), $(SRCS)) $(INCLUDES_DIR)/ft_malloc.h
 
 .PHONY: all clean fclean re unit $(UNIT_NAME)

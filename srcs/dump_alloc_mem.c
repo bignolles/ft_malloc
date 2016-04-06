@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 10:44:51 by marene            #+#    #+#             */
-/*   Updated: 2016/02/22 19:02:28 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/06 16:43:57 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,24 +67,30 @@ static void				dump_tiny_small(void *data, void *end)
 	int			i;
 	int32_t		len;
 	char		meta;
+	t_header	*head;
 
-	i = 0;
-	meta = 0;
-	len = *(int32_t*)data;
-	if (len != 0)
-		meta = 4;
-	while (data + i < end)
+	while (data != NULL)
 	{
-		if (i != DUMP_INC && len == 0 && meta == 0)
+		i = 0;
+		meta = 0;
+		len = *(int32_t*)data;
+		if (len != 0)
+			meta = 4;
+		head = header_change_segment((t_header**)&data, SEG_NONE, ORIGIN);
+		while (data + i < end)
 		{
-			len = *(int32_t*)(data + i);
-			if (len != 0)
-				meta = 4;
+			if (i != DUMP_INC && len == 0 && meta == 0)
+			{
+				len = *(int32_t*)(data + i);
+				if (len != 0)
+					meta = 4;
+			}
+			putaddr((unsigned long int)(data + i), 1);
+			ft_putchar('\t');
+			dump_adress_content(data + i, end, &len, &meta);
+			i += DUMP_INC;
 		}
-		putaddr((unsigned long int)(data + i), 1);
-		ft_putchar('\t');
-		dump_adress_content(data + i, end, &len, &meta);
-		i += DUMP_INC;
+		data = header_change_segment(&head, SEG_NEXT, ORIGIN);
 	}
 }
 

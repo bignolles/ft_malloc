@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/04 11:38:23 by marene            #+#    #+#             */
-/*   Updated: 2016/02/24 16:15:23 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/06 18:45:31 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,24 +43,36 @@ int32_t				defragment_memory(t_blocksize blk_size, void *meta_ptr)
 {
 	void			*it;
 	void			*defrag;
+	void			*data;
+	t_header		*head;
 	int32_t			size;
 
 	defrag = NULL;
 	size = 0;
+	data = g_malloc_data.datas[blk_size];
 	if (blk_size < LARGE)
 	{
-		it = g_malloc_data.datas[blk_size];
-		defrag = NULL;
-		while (it < g_malloc_data.datas_end[blk_size])
+		while (data != NULL)
 		{
-			if (*(int32_t*)it <= 0)
-				it = frag_regroup(it, &defrag, -1 * *(int32_t*)it, &size);
-			else
+			ft_putendl("toto1");
+			head = header_change_segment((t_header**)(&data), SEG_NONE, ORIGIN);
+			ft_putendl("toto2");
+			it = data;
+			defrag = NULL;
+			while (it < g_malloc_data.datas_end[blk_size])
 			{
-				it = frag_concat(it, &defrag, *(int32_t*)it, &size);
-				if (it > meta_ptr)
-					return (M_OK);
+				if (*(int32_t*)it <= 0)
+					it = frag_regroup(it, &defrag, -1 * *(int32_t*)it, &size);
+				else
+				{
+					it = frag_concat(it, &defrag, *(int32_t*)it, &size);
+					if (it > meta_ptr)
+						return (M_OK);
+				}
 			}
+			ft_putendl("cyka1");
+			data = header_change_segment(&head, SEG_NEXT, ORIGIN);
+			ft_putendl("cyka2");
 		}
 	}
 	if (defrag != NULL)
