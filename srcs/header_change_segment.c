@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/06 15:37:37 by marene            #+#    #+#             */
-/*   Updated: 2016/04/06 18:58:36 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/07 12:35:06 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 static void		check_header(t_header *head, const char *origin)
 {
-	if (head->magic != (M_MAGIC ^ (unsigned int)head))
+	if (head->magic != (M_MAGIC ^ (unsigned long int)head))
 	{
 		ft_putstr("invalid header at ");
 		putaddr((unsigned long int)head, 1);
@@ -34,7 +34,7 @@ void			*header_change_segment(t_header **head, t_direction dir, const char *orig
 
 	data = NULL;
 	if (dir == SEG_NONE)
-		data = (*head) - sizeof(t_header);
+		data = (*head - 1);
 	else if (dir == SEG_PREV)
 		data = (*head)->prev;
 	else if (dir == SEG_NEXT)

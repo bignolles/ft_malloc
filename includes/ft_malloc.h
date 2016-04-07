@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/04/06 16:45:11 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/07 17:10:25 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 # define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
 
 # define TINY_PAGES_NB		5//25
-# define SMALL_PAGES_NB		257
+# define SMALL_PAGES_NB		24//257
 # define LARGE_PAGES_NB		4
 
 # define TINY_ATOMIC		16

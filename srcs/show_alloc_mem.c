@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 17:43:53 by marene            #+#    #+#             */
-/*   Updated: 2016/02/24 18:44:53 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/07 16:04:33 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,30 +38,42 @@ static void		print_allocated_zone(void *it, int32_t size, int fd)
 	(void)fd;
 }
 
-static void		print_tiny_small(char *title, void *it, void *end, int fd)
+static void		print_segment(t_blocksize blk_size, void *it, void *end, int fd)
 {
-	int32_t		size;
-	int32_t		total_size;
-
 	ft_putendl_fd("------------------------------------------------------", fd);
-	total_size = 0;
-	ft_putstr_fd(title, fd);
+	ft_putstr_fd((blk_size == TINY) ? "TINY " : "SMALL ", fd);
 	putaddr((unsigned long int)it, fd);
 	ft_putstr_fd(" - ", fd);
 	putaddr((unsigned long int)end, fd);
 	ft_putchar_fd('\n', fd);
-	while (it < end - sizeof(int32_t))
+}
+
+static void		print_tiny_small(t_blocksize blk_size, void *it, void *end, int fd)
+{
+	int32_t		size;
+	int32_t		total_size;
+	t_header	*head;
+
+	total_size = 0;
+	while (it != NULL)
 	{
-		size = 0;
-		if (it != NULL)
+		print_segment(blk_size, it, end, fd);
+		head = header_change_segment((t_header**)&it, SEG_NONE, ORIGIN);
+		while (it < end - sizeof(int32_t))
 		{
-			size = *(int32_t*)it;
-			if (size != 0)
-				print_allocated_zone(it, size, fd);
-			if (size < 0)
-				size *= -1;
+			size = 0;
+			if (it != NULL)
+			{
+				size = *(int32_t*)it;
+				if (size != 0)
+					print_allocated_zone(it, size, fd);
+				if (size < 0)
+					size *= -1;
+			}
+			it += (size + sizeof(int32_t));
 		}
-		it += (size + sizeof(int32_t));
+		it = header_change_segment(&head, SEG_NEXT, ORIGIN);
+		end = it + g_malloc_data.datas_len[blk_size];
 	}
 	ft_putendl_fd("------------------------------------------------------", fd);
 }
@@ -93,10 +105,10 @@ static void		print_large(int fd)
 void			display_allocs(int fd)
 {
 	if (g_malloc_data.datas[TINY] != NULL)
-		print_tiny_small("TINY : ", g_malloc_data.datas[TINY],
+		print_tiny_small(TINY, g_malloc_data.datas[TINY],
 				g_malloc_data.datas_end[TINY], fd);
 	if (g_malloc_data.datas[SMALL] != NULL)
-		print_tiny_small("SMALL : ", g_malloc_data.datas[SMALL],
+		print_tiny_small(SMALL, g_malloc_data.datas[SMALL],
 				g_malloc_data.datas_end[SMALL], fd);
 	if (g_malloc_data.meta_large != NULL)
 		print_large(fd);

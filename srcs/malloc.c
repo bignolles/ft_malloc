@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/04/06 18:37:40 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/07 15:04:04 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,6 @@ void				*malloc(size_t size)
 	t_blocksize		blk_size;
 	static int		init[3] = {0, 0};
 
-	t_header	*head;
-
 	if (size != 0)
 	{
 		blk_size = get_blk_size(size);
@@ -127,11 +125,6 @@ void				*malloc(size_t size)
 			{
 				record_allocations_init();
 				init[blk_size] = 1;
-				head = (t_header*)g_malloc_data.datas[blk_size] - sizeof(t_header);
-				if (head->magic != (M_MAGIC ^ (unsigned long int)head))
-				{
-					exit(42);
-				}
 			}
 			else
 			{

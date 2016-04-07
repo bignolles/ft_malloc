@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/04/06 18:56:35 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/07 12:35:19 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,6 @@ static int	init_small(void)
 	g_malloc_data.datas_len[SMALL] = size - sizeof(t_header);
 	g_malloc_data.datas[SMALL] = g_malloc_data.data_small + sizeof(t_header);
 	g_malloc_data.datas_end[SMALL] = g_malloc_data.datas[SMALL] + g_malloc_data.datas_len[SMALL];
-	if (((t_header*)(g_malloc_data.datas[SMALL] - sizeof(t_header)))->magic == (M_MAGIC ^ (unsigned long int)(g_malloc_data.datas[SMALL] - sizeof(t_header))))
-		ft_putendl("init_small magic ok");
-	header_change_segment((t_header**)(&(g_malloc_data.datas[SMALL])), SEG_NONE, __func__);
 	g_malloc_data.max_size[SMALL] = defragment_memory(SMALL,
 			g_malloc_data.datas_end[SMALL]);
 	return (M_OK);

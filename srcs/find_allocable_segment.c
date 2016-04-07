@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/05 17:17:24 by marene            #+#    #+#             */
-/*   Updated: 2016/04/06 18:30:16 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/07 17:15:02 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,9 @@ void				*find_allocable_segment(size_t size, t_blocksize blk_size)
 			}
 			else
 				i += (-1 * len) + sizeof(int32_t);
-			++i;
 		}
 		data = header_change_segment(&head, SEG_NEXT, ORIGIN);
+		data_end = data + g_malloc_data.datas_len[blk_size];
 	}
 	return (extend_blk(blk_size, head));
 }

@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 10:44:51 by marene            #+#    #+#             */
-/*   Updated: 2016/04/06 16:43:57 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/07 15:52:22 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static void				dump_adress_content(void *addr, void *end,
 	ft_putstr_dump(addr, DUMP_INC);
 }
 
-static void				dump_tiny_small(void *data, void *end)
+static void				dump_tiny_small(void *data, void *end, t_blocksize blk_size)
 {
 	int			i;
 	int32_t		len;
@@ -90,7 +90,8 @@ static void				dump_tiny_small(void *data, void *end)
 			dump_adress_content(data + i, end, &len, &meta);
 			i += DUMP_INC;
 		}
-		data = header_change_segment(&head, SEG_NEXT, ORIGIN);
+		data = (blk_size == LARGE) ? NULL : header_change_segment(&head, SEG_NEXT, ORIGIN);
+		end = (blk_size == LARGE) ? NULL : data + g_malloc_data.datas_len[blk_size];
 	}
 }
 
@@ -111,7 +112,7 @@ static void				dump_large(void)
 			len = *(int32_t*)it;
 			real_len = (len / getpagesize() + (len % getpagesize() > 0))
 				* getpagesize();
-			dump_tiny_small(it, it + real_len);
+			dump_tiny_small(it, it + real_len, LARGE);
 			ft_putendl("-------------------------------------");
 		}
 		++i;
@@ -122,7 +123,7 @@ void					dump_alloc_mem(t_blocksize blk_size)
 {
 	if (blk_size < LARGE && g_malloc_data.datas[blk_size] != NULL)
 		dump_tiny_small(g_malloc_data.datas[blk_size],
-				g_malloc_data.datas_end[blk_size]);
+				g_malloc_data.datas_end[blk_size], blk_size);
 	else if (g_malloc_data.meta_large != NULL)
 		dump_large();
 }
