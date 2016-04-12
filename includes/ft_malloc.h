@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/04/07 17:10:25 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/12 11:16:24 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <stdint.h>
 # include <stdlib.h>
 
-# define M_MAGIC			0xdeadbeeb00b13
+# define M_MAGIC			0xdeadbeefb00b1e
 
 # define HEADER_CONTROL_STRICT
 # ifdef HEADER_CONTROL_STRICT
@@ -38,8 +38,8 @@
 # define MMAP_PROT			PROT_READ | PROT_WRITE
 # define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
 
-# define TINY_PAGES_NB		5//25
-# define SMALL_PAGES_NB		24//257
+# define TINY_PAGES_NB		5
+# define SMALL_PAGES_NB		24
 # define LARGE_PAGES_NB		4
 
 # define TINY_ATOMIC		16
@@ -64,6 +64,13 @@
 #  define CALL_RECORD(x) (void)x
 # endif
 
+# define M_PROFILE_BASIC
+# ifdef M_PROFILE_BASIC
+#  define PROFILE_BASIC	ft_putendl(__func__)
+# else
+#  define PROFILE_BASIC
+# endif
+
 /*
 ** Comment RECORD_FILE_NAME define to disable recording of allocations
 */
@@ -75,16 +82,38 @@ typedef enum	e_blocksize
 	LARGE,
 }				t_blocksize;
 
+/*
+** struct s_metadata
+** {
+** void			*data_tiny;			->  Debut reel de la zone tiny
+**                                      (adresse retournee par mmap)
+** void			*data_tiny_end;		->  fin reelle de la zone tiny
+** void			*data_small;		->  ditto
+** void			*data_small_end;	->  ditto
+** void			*datas[2];			->  Debut effectif des  zones tiny et small
+**                                      (apres le header)
+** void			*datas_end[2];		->  Fin effective des zones tiny et small
+**                                      (correspondent a data_*_end dans
+**                                       l'implementation actuelle)
+** size_t		datas_len[2];		->  Longueurs effectives des zones tiny et
+**                                      small (taille du mmap-sizeof(t_header))
+** void			**meta_large;		->  recap de tous les sets de pages large
+** int			meta_large_len;
+** int32_t		max_size[2];
+** int			record_fd;
+** }
+*/
+
 typedef struct	s_metadata
 {
-	void		*data_tiny; // Debut reel de la zone tiny (adresse retournee par mmap)
-	void		*data_tiny_end; // fin reelle de la zone tiny
-	void		*data_small; // ditto
-	void		*data_small_end; // ditto
-	void		*datas[2]; // Debut effectif des  zones tiny et small (apres le header)
-	void		*datas_end[2]; // Fin effective des zones tiny et small (correspondent a data_*_end dans l'implementation actuelle)
-	size_t		datas_len[2]; // Longueurs effectives des zones tiny et small (taille du mmap - sizeof(t_header))
-	void		**meta_large; // recap de tous les sets de pages large
+	void		*data_tiny;
+	void		*data_tiny_end;
+	void		*data_small;
+	void		*data_small_end;
+	void		*datas[2];
+	void		*datas_end[2];
+	size_t		datas_len[2];
+	void		**meta_large;
 	int			meta_large_len;
 	int32_t		max_size[2];
 	int			record_fd;
@@ -92,11 +121,21 @@ typedef struct	s_metadata
 
 t_metadata		g_malloc_data;
 
+/*
+** struct s_header
+** {
+** unsigned long int	magic;	-> M_MAGIC ^ adresse du header
+** void				*prev;		-> Pointeur sur le prochain groupe de pages du
+**                                 bloc (zone effective, apres header)
+** void				*next;		-> Ditto pour la zone precedante
+** }
+*/
+
 typedef struct	s_header
 {
-	unsigned long int	magic; //M_MAGIC ^ adresse du header
-	void				*prev; //Pointeur sur le prochain groupe de pages du bloc (zone effective, apres header)
-	void				*next; //Ditto pour la zone precedante
+	unsigned long int	magic;
+	void				*prev;
+	void				*next;
 }				t_header;
 
 typedef enum	e_direction
@@ -120,7 +159,8 @@ void			show_alloc_mem(void);
 void			display_allocs(int fd);
 int32_t			defragment_memory(t_blocksize blk_size, void *meta_ptr);
 void			*find_allocable_segment(size_t size, t_blocksize blk_size);
-void			*header_change_segment(t_header **head, t_direction dir, const char *origin);
+void			*header_change_segment(t_header **head, t_direction dir,
+				const char *origin);
 void			dump_alloc_mem(t_blocksize blk_size);
 int				record_allocations_init();
 void			record_allocations();

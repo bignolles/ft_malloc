@@ -19,7 +19,8 @@ SRCS =			defragment_memory.c\
 				record.c\
 				show_alloc_mem.c\
 				find_allocable_segment.c\
-				header_change_segment.c
+				header_change_segment.c\
+				display_allocs.c
 OBJ =			$(SRCS:.c=.o)
 LIBFT =			$(LIBFT_DIR)libft.a
 CC =			clang

@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/19 10:44:51 by marene            #+#    #+#             */
-/*   Updated: 2016/04/07 15:52:22 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/12 18:21:25 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ static void				dump_adress_content(void *addr, void *end,
 	int		i;
 
 	i = 0;
+	ft_putchar('\t');
 	while (i < DUMP_INC && addr + i < end)
 	{
 		adjust_len_and_meta(addr + i, len, meta);
@@ -62,7 +63,8 @@ static void				dump_adress_content(void *addr, void *end,
 	ft_putstr_dump(addr, DUMP_INC);
 }
 
-static void				dump_tiny_small(void *data, void *end, t_blocksize blk_size)
+static void				dump_tiny_small(void *data, void *end,
+		t_blocksize blk_size)
 {
 	int			i;
 	int32_t		len;
@@ -72,26 +74,22 @@ static void				dump_tiny_small(void *data, void *end, t_blocksize blk_size)
 	while (data != NULL)
 	{
 		i = 0;
-		meta = 0;
 		len = *(int32_t*)data;
-		if (len != 0)
-			meta = 4;
+		meta = (len != 0) ? 4 : 0;
 		head = header_change_segment((t_header**)&data, SEG_NONE, ORIGIN);
 		while (data + i < end)
 		{
 			if (i != DUMP_INC && len == 0 && meta == 0)
-			{
-				len = *(int32_t*)(data + i);
-				if (len != 0)
+				if ((len = *(int32_t*)(data + i)) != 0)
 					meta = 4;
-			}
 			putaddr((unsigned long int)(data + i), 1);
-			ft_putchar('\t');
 			dump_adress_content(data + i, end, &len, &meta);
 			i += DUMP_INC;
 		}
-		data = (blk_size == LARGE) ? NULL : header_change_segment(&head, SEG_NEXT, ORIGIN);
-		end = (blk_size == LARGE) ? NULL : data + g_malloc_data.datas_len[blk_size];
+		if (blk_size == LARGE)
+			return ;
+		data = header_change_segment(&head, SEG_NEXT, ORIGIN);
+		end = data + g_malloc_data.datas_len[blk_size];
 	}
 }
 

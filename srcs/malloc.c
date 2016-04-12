@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/04/07 15:04:04 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/12 18:13:28 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static void			*alloc_large(size_t size)
 	void	*ret;
 	int		i;
 
+	PROFILE_BASIC;
 	i = 0;
 	while (i < g_malloc_data.meta_large_len
 			&& g_malloc_data.meta_large[i] != NULL)
@@ -44,6 +45,7 @@ static void			*alloc_large(size_t size)
 static void			*alloc_tiny_small(void *new_meta, int32_t meta_len,
 		int32_t size)
 {
+	PROFILE_BASIC;
 	*(int32_t*)new_meta = size;
 	if (meta_len < 0 && -1 * meta_len > (int32_t)(size + sizeof(int32_t)))
 	{
@@ -56,34 +58,12 @@ static void			*alloc_tiny_small(void *new_meta, int32_t meta_len,
 
 static void			*alloc(size_t size, t_blocksize blk_size)
 {
-	/*
-	int		i;
-	void	*data;
-	void	*data_end;
-	*/
 	int32_t		len;
 	void		*new_meta;
 
+	PROFILE_BASIC;
 	if (blk_size == LARGE)
 		return (alloc_large(size));
-	/*
-	i = 0;
-	data = g_malloc_data.datas[blk_size];
-	data_end = g_malloc_data.datas_end[blk_size];
-	while (data + i < data_end)
-	{
-		len = *(int32_t*)(data + i);
-		if (len > 0)
-			i += len + sizeof(int32_t);
-		else if ((len == 0 && data + i + sizeof(int32_t) + size <= data_end)
-				|| -1 * len > (int32_t)(size + sizeof(int32_t)))
-		{
-			return (alloc_tiny_small(data + i, len, (int32_t)size));
-		}
-		else
-			i += (-1 * len) + sizeof(int32_t);
-	}
-	*/
 	new_meta = find_allocable_segment(size, blk_size);
 	if (new_meta != NULL)
 	{
@@ -96,6 +76,7 @@ static void			*alloc(size_t size, t_blocksize blk_size)
 
 static t_blocksize	get_blk_size(size_t size)
 {
+	PROFILE_BASIC;
 	if (size <= TINY_MAX_SIZE)
 	{
 		return (TINY);
@@ -115,6 +96,7 @@ void				*malloc(size_t size)
 	t_blocksize		blk_size;
 	static int		init[3] = {0, 0};
 
+	PROFILE_BASIC;
 	if (size != 0)
 	{
 		blk_size = get_blk_size(size);

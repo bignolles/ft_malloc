@@ -6,7 +6,7 @@
 /*   By: ndatin <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/02/24 16:16:22 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/11 16:17:13 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ extern t_metadata	g_malloc_data;
 
 static t_blocksize	get_blk_size(void *meta_ptr)
 {
+	PROFILE_BASIC;
 	if (meta_ptr >= g_malloc_data.datas[TINY]
 			&& meta_ptr < g_malloc_data.datas_end[TINY])
 	{
@@ -40,6 +41,7 @@ static int			clear_meta(void *meta_ptr)
 {
 	int		i;
 
+	PROFILE_BASIC;
 	i = 0;
 	while (i < g_malloc_data.meta_large_len
 			&& g_malloc_data.meta_large[i] != meta_ptr)
@@ -59,6 +61,7 @@ void				free(void *usr_ptr)
 	int				alloced;
 	t_blocksize		blk_size;
 
+	PROFILE_BASIC;
 	CALL_RECORD(__func__);
 	m_ptr = usr_ptr - sizeof(int32_t);
 	blk_size = get_blk_size(m_ptr);
