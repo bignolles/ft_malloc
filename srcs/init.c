@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/04/12 18:22:15 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/14 17:16:06 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ static int	init_small(void)
 	g_malloc_data.datas[SMALL] = g_malloc_data.data_small + sizeof(t_header);
 	g_malloc_data.datas_end[SMALL] = g_malloc_data.datas[SMALL]
 		+ g_malloc_data.datas_len[SMALL];
+	g_malloc_data.max_size[SMALL] = defragment_memory(SMALL,
+			g_malloc_data.datas_end[SMALL]);
 	return (M_OK);
 }
 

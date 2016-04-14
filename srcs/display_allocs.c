@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 17:43:53 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:28:36 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/14 16:54:25 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ static void		print_tiny_small(t_blocksize blk_size, void *it, void *end,
 	total_size = 0;
 	while (it != NULL)
 	{
-		print_segment(blk_size, it, end, fd);
 		head = header_change_segment((t_header**)&it, SEG_NONE, ORIGIN);
+		print_segment(blk_size, it, end, fd);
 		while (it < end - sizeof(int32_t))
 		{
 			size = 0;
@@ -74,6 +74,8 @@ static void		print_tiny_small(t_blocksize blk_size, void *it, void *end,
 			}
 			it += (size + sizeof(int32_t));
 		}
+		if (blk_size == LARGE)
+			return ;
 		it = header_change_segment(&head, SEG_NEXT, ORIGIN);
 		end = it + g_malloc_data.datas_len[blk_size];
 	}

@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/06 15:37:37 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:13:18 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/13 14:04:59 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "libft.h"
 #include "ft_malloc.h"
 
-static void		check_header(t_header *head, const char *origin)
+void			check_header(t_header *head, const char *origin)
 {
 	PROFILE_BASIC;
 	if (head->magic != (M_MAGIC ^ (unsigned long int)head))

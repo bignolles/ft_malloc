@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 11:16:24 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/14 17:07:46 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,29 +32,6 @@
 #  define ORIGIN			""
 # endif
 
-# define M_OK				0x00
-# define M_NOK				0x01
-
-# define MMAP_PROT			PROT_READ | PROT_WRITE
-# define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
-
-# define TINY_PAGES_NB		5
-# define SMALL_PAGES_NB		24
-# define LARGE_PAGES_NB		4
-
-# define TINY_ATOMIC		16
-# define SMALL_ATOMIC		997
-
-# define TINY_MAX_SIZE		994
-# define SMALL_MAX_SIZE		4096
-
-# define CLI_DEFAULT		"\e[39m"
-# define CLI_RED			"\e[31m"
-# define CLI_BLUE			"\e[34m"
-# define CLI_GREEN			"\e[32m"
-
-# define DUMP_INC			(int)(2 * sizeof(void*))
-
 /*
 ** # define RECORD_FILE_NAME	"./libft_malloc.record"
 */
@@ -64,16 +41,37 @@
 #  define CALL_RECORD(x) (void)x
 # endif
 
-# define M_PROFILE_BASIC
+/*
+** # define M_PROFILE_BASIC
+*/
 # ifdef M_PROFILE_BASIC
 #  define PROFILE_BASIC	ft_putendl(__func__)
 # else
 #  define PROFILE_BASIC
 # endif
 
-/*
-** Comment RECORD_FILE_NAME define to disable recording of allocations
-*/
+# define M_OK				0x00
+# define M_NOK				0x01
+
+# define MMAP_PROT			PROT_READ | PROT_WRITE
+# define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
+
+# define TINY_PAGES_NB		26 // minimum pour 100 TINY_MAX
+# define SMALL_PAGES_NB		51 // RECHECKER 100 ALLOC TAILLE MAX PAR ZONE /!
+# define LARGE_PAGES_NB		4
+
+# define TINY_ATOMIC		16
+# define SMALL_ATOMIC		997
+
+# define TINY_MAX_SIZE		1024//994
+# define SMALL_MAX_SIZE		2048//4096
+
+# define CLI_DEFAULT		"\e[39m"
+# define CLI_RED			"\e[31m"
+# define CLI_BLUE			"\e[34m"
+# define CLI_GREEN			"\e[32m"
+
+# define DUMP_INC			(int)(2 * sizeof(void*))
 
 typedef enum	e_blocksize
 {
@@ -161,6 +159,8 @@ int32_t			defragment_memory(t_blocksize blk_size, void *meta_ptr);
 void			*find_allocable_segment(size_t size, t_blocksize blk_size);
 void			*header_change_segment(t_header **head, t_direction dir,
 				const char *origin);
+void			check_header(t_header *head, const char *origin);
+int				destroy_segment(t_header *head);
 void			dump_alloc_mem(t_blocksize blk_size);
 int				record_allocations_init();
 void			record_allocations();
