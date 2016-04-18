@@ -6,13 +6,14 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/13 13:18:25 by marene            #+#    #+#             */
-/*   Updated: 2016/04/14 14:10:31 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/18 17:24:03 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "ft_malloc.h"
 
-int		destroy_segment(t_header *head)
+void		destroy_segment(t_header *head)
 {
 	t_header	*prev;
 	t_header	*next;
@@ -25,12 +26,12 @@ int		destroy_segment(t_header *head)
 	if (prev != NULL)
 	{
 		HEADER_CONTROL(prev, ORIGIN);
-		prev->next = next;
+		prev->next = next + 1;
 	}
 	if (next != NULL)
 	{
 		HEADER_CONTROL(next, ORIGIN);
-		next->prev = prev;
+		next->prev = prev + 1;
 	}
-	return (M_OK);
+	//munmap head
 }

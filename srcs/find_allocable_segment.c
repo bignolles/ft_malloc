@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/05 17:17:24 by marene            #+#    #+#             */
-/*   Updated: 2016/04/14 14:09:58 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/18 17:20:29 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void				*extend_blk(t_blocksize blk_size, t_header *head)
 	int			pagesize;
 
 	PROFILE_BASIC;
-	ft_putendl("_extend_blk");
 	pagesize = getpagesize();
 	size = (blk_size == TINY) ? TINY_PAGES_NB * pagesize
 		: SMALL_PAGES_NB * pagesize;
@@ -33,9 +32,10 @@ void				*extend_blk(t_blocksize blk_size, t_header *head)
 		return (NULL);
 	ft_bzero(new_data, size);
 	((t_header*)new_data)->magic = M_MAGIC ^ (unsigned long int)new_data;
-	((t_header*)new_data)->prev = (void*)(head + sizeof(t_header));
+	((t_header*)new_data)->prev = (void*)(head + 1);
 	((t_header*)new_data)->next = NULL;
 	head->next = new_data + sizeof(t_header);
+	defragment_memory(blk_size, new_data + g_malloc_data.datas_len[blk_size]);
 	return (new_data + sizeof(t_header));
 }
 

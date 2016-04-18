@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/04/14 17:07:46 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/18 16:43:00 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ typedef struct	s_metadata
 	void		*data_small_end;
 	void		*datas[2];
 	void		*datas_end[2];
-	size_t		datas_len[2];
+	int32_t		datas_len[2];
 	void		**meta_large;
 	int			meta_large_len;
 	int32_t		max_size[2];
@@ -160,8 +160,9 @@ void			*find_allocable_segment(size_t size, t_blocksize blk_size);
 void			*header_change_segment(t_header **head, t_direction dir,
 				const char *origin);
 void			check_header(t_header *head, const char *origin);
-int				destroy_segment(t_header *head);
+void			destroy_segment(t_header *head);
 void			dump_alloc_mem(t_blocksize blk_size);
+void			display_segments(t_blocksize blk_size);
 int				record_allocations_init();
 void			record_allocations();
 
