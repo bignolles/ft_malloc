@@ -6,7 +6,7 @@
 /*   By: ndatin <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/04/18 17:10:51 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/21 18:35:13 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,38 +18,29 @@
 
 extern t_metadata	g_malloc_data;
 
-static t_blocksize	get_blk_size(void *meta_ptr, t_header **head)
+static t_blocksize	get_blk_size(void *m_ptr, t_header **head)
 {
-	void		*data_tiny;
-	void		*data_small;
-	t_header	*head_tiny;
-	t_header	*head_small;
+	void		*data;
+	t_header	*h;
+	t_blocksize	blk_size;
 
 	PROFILE_BASIC;
-	data_tiny = g_malloc_data.datas[TINY];
-	data_small = g_malloc_data.datas[SMALL];
-	while (data_tiny != NULL || data_small != NULL)
+	blk_size = TINY;
+	data = g_malloc_data.datas[TINY];
+	while (data != NULL)
 	{
-		if (data_tiny != NULL)
+		while (data != NULL)
 		{
-			head_tiny = header_change_segment((t_header**)(&data_tiny),
+			h = header_change_segment((t_header**)(&data),
 					SEG_NONE, ORIGIN);
-			*head = head_tiny;
-			if (meta_ptr >= data_tiny
-					&& meta_ptr <= data_tiny + g_malloc_data.datas_len[TINY])
-				return (TINY);
-			data_tiny = header_change_segment(&head_tiny, SEG_NEXT, ORIGIN);
+			*head = h;
+			if (m_ptr >= data &&
+					m_ptr <= data + g_malloc_data.datas_len[blk_size])
+				return (blk_size);
+			data = header_change_segment(&h, SEG_NEXT, ORIGIN);
 		}
-		else if (data_small != NULL)
-		{
-			head_small = header_change_segment((t_header**)(&data_small),
-					SEG_NONE, ORIGIN);
-			*head = head_small;
-			if (meta_ptr >= data_small
-					&& meta_ptr <= data_small + g_malloc_data.datas_len[SMALL])
-				return (SMALL);
-			data_small = header_change_segment(&head_small, SEG_NEXT, ORIGIN);
-		}
+		data = (blk_size == TINY) ? g_malloc_data.datas[SMALL] : NULL;
+		blk_size = SMALL;
 	}
 	return (LARGE);
 }
@@ -71,6 +62,19 @@ static int			clear_meta(void *meta_ptr)
 	return (M_NOK);
 }
 
+static void			check_for_destroy(t_blocksize blk_size, void *m_ptr,
+		t_header *head)
+{
+	int				alloced;
+
+	if ((alloced = defragment_memory(blk_size, m_ptr)) >=
+			g_malloc_data.max_size[blk_size] &&
+			((void*)head >= g_malloc_data.datas[blk_size] +
+			g_malloc_data.datas_len[blk_size]
+			|| (void*)head < g_malloc_data.datas[blk_size] - sizeof(t_header)))
+		destroy_segment(head, blk_size);
+}
+
 void				free(void *usr_ptr)
 {
 	void			*m_ptr;
@@ -89,9 +93,7 @@ void				free(void *usr_ptr)
 	{
 		if (*(int32_t*)m_ptr > 0)
 			*(int32_t*)m_ptr *= -1;
-		if ((alloced = defragment_memory(blk_size, m_ptr)) >= g_malloc_data.max_size[blk_size]
-				&& ((void*)head >= g_malloc_data.datas_end[blk_size] || (void*)head < g_malloc_data.datas[blk_size]))
-			destroy_segment(head);
+		check_for_destroy(blk_size, m_ptr, head);
 	}
 	else if (usr_ptr != NULL && m_ptr != NULL && clear_meta(m_ptr) == M_OK)
 	{

@@ -6,7 +6,7 @@
 /*   By: ndatin <ndatin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/13 13:37:18 by ndatin            #+#    #+#             */
-/*   Updated: 2016/04/18 16:51:44 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/21 18:36:26 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,14 @@ static int	init_tiny(void)
 
 	pagesize = getpagesize();
 	size = TINY_PAGES_NB * pagesize;
-	g_malloc_data.data_tiny = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
+	g_malloc_data.data_tiny = NULL;
 	if (g_malloc_data.data_tiny == MAP_FAILED)
 		return (M_NOK);
-	ft_bzero(g_malloc_data.data_tiny, size);
-	((t_header*)g_malloc_data.data_tiny)->magic =
-		M_MAGIC ^ (unsigned long int)g_malloc_data.data_tiny;
-	((t_header*)g_malloc_data.data_tiny)->prev = NULL;
-	((t_header*)g_malloc_data.data_tiny)->next = NULL;
 	g_malloc_data.datas_len[TINY] = size - sizeof(t_header);
-	g_malloc_data.datas[TINY] = g_malloc_data.data_tiny + sizeof(t_header);
-	g_malloc_data.datas_end[TINY] = g_malloc_data.datas[TINY]
-		+ g_malloc_data.datas_len[TINY];
-	g_malloc_data.max_size[TINY] = defragment_memory(TINY,
-			g_malloc_data.datas_end[TINY]);
+	g_malloc_data.datas[TINY] = NULL;
+	g_malloc_data.max_size[TINY] = TINY_PAGES_NB * pagesize - sizeof(t_header)
+		- sizeof(int32_t);
+	g_malloc_data.datas_atomic[TINY] = TINY_ATOMIC;
 	return (M_OK);
 }
 
@@ -49,20 +43,14 @@ static int	init_small(void)
 
 	pagesize = getpagesize();
 	size = SMALL_PAGES_NB * pagesize;
-	g_malloc_data.data_small = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
+	g_malloc_data.data_small = NULL;
 	if (g_malloc_data.data_small == MAP_FAILED)
 		return (M_NOK);
-	ft_bzero(g_malloc_data.data_small, size);
-	((t_header*)g_malloc_data.data_small)->magic =
-		M_MAGIC ^ (unsigned long int)g_malloc_data.data_small;
-	((t_header*)g_malloc_data.data_small)->prev = NULL;
-	((t_header*)g_malloc_data.data_small)->next = NULL;
 	g_malloc_data.datas_len[SMALL] = size - sizeof(t_header);
-	g_malloc_data.datas[SMALL] = g_malloc_data.data_small + sizeof(t_header);
-	g_malloc_data.datas_end[SMALL] = g_malloc_data.datas[SMALL]
-		+ g_malloc_data.datas_len[SMALL];
-	g_malloc_data.max_size[SMALL] = defragment_memory(SMALL,
-			g_malloc_data.datas_end[SMALL]);
+	g_malloc_data.datas[SMALL] = NULL;
+	g_malloc_data.max_size[SMALL] = SMALL_PAGES_NB * pagesize - sizeof(t_header)
+		- sizeof(int32_t);
+	g_malloc_data.datas_atomic[SMALL] = SMALL_ATOMIC;
 	return (M_OK);
 }
 

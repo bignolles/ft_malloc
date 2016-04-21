@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/18 15:16:17 by marene            #+#    #+#             */
-/*   Updated: 2016/04/18 15:27:41 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/21 17:19:08 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ void				display_segments(t_blocksize blk_size)
 
 	if (blk_size != LARGE)
 	{
-		ft_putendl((blk_size == TINY) ? "___segments TINY___" : "___segments SMALL___");
+		ft_putendl((blk_size == TINY) ? "___segments TINY___"
+				: "___segments SMALL___");
 		data = g_malloc_data.datas[blk_size];
 		while (data != NULL)
 		{

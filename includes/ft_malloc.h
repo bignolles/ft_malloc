@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/04/18 16:43:00 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/21 18:49:11 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,15 @@
 # define MMAP_PROT			PROT_READ | PROT_WRITE
 # define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
 
-# define TINY_PAGES_NB		26 // minimum pour 100 TINY_MAX
-# define SMALL_PAGES_NB		51 // RECHECKER 100 ALLOC TAILLE MAX PAR ZONE /!
+# define TINY_PAGES_NB		13
+# define SMALL_PAGES_NB		26
 # define LARGE_PAGES_NB		4
 
 # define TINY_ATOMIC		16
-# define SMALL_ATOMIC		997
+# define SMALL_ATOMIC		64
 
-# define TINY_MAX_SIZE		1024//994
-# define SMALL_MAX_SIZE		2048//4096
+# define TINY_MAX_SIZE		512
+# define SMALL_MAX_SIZE		1024
 
 # define CLI_DEFAULT		"\e[39m"
 # define CLI_RED			"\e[31m"
@@ -109,12 +109,13 @@ typedef struct	s_metadata
 	void		*data_small;
 	void		*data_small_end;
 	void		*datas[2];
-	void		*datas_end[2];
+	int32_t		datas_atomic[2];
 	int32_t		datas_len[2];
 	void		**meta_large;
 	int			meta_large_len;
 	int32_t		max_size[2];
 	int			record_fd;
+	int			init[3];
 }				t_metadata;
 
 t_metadata		g_malloc_data;
@@ -160,7 +161,8 @@ void			*find_allocable_segment(size_t size, t_blocksize blk_size);
 void			*header_change_segment(t_header **head, t_direction dir,
 				const char *origin);
 void			check_header(t_header *head, const char *origin);
-void			destroy_segment(t_header *head);
+void			destroy_segment(t_header *head, t_blocksize blk_size);
+size_t			roundup_large_size(size_t size);
 void			dump_alloc_mem(t_blocksize blk_size);
 void			display_segments(t_blocksize blk_size);
 int				record_allocations_init();

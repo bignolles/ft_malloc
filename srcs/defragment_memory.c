@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/04 11:38:23 by marene            #+#    #+#             */
-/*   Updated: 2016/04/18 16:58:49 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/21 17:08:11 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,7 @@ static int32_t		defrag_it(t_blocksize blk_size, void *data, void *meta_ptr)
 		{
 			it = frag_concat(it, &defrag, *(int32_t*)it, &size);
 			if (it > meta_ptr || it >= data + g_malloc_data.datas_len[blk_size])
-			{
 				return (size);
-			}
 			size = 0;
 		}
 	}

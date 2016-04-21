@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 17:43:53 by marene            #+#    #+#             */
-/*   Updated: 2016/04/14 16:54:25 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/21 17:18:28 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,8 @@ static void		print_tiny_small(t_blocksize blk_size, void *it, void *end,
 				size = *(int32_t*)it;
 				if (size != 0)
 					print_allocated_zone(it, size, fd);
-				if (size < 0)
-					size *= -1;
 			}
-			it += (size + sizeof(int32_t));
+			it += (((size < 0) ? -1 * size : size) + sizeof(int32_t));
 		}
 		if (blk_size == LARGE)
 			return ;
@@ -109,10 +107,10 @@ void			display_allocs(int fd)
 {
 	if (g_malloc_data.datas[TINY] != NULL)
 		print_tiny_small(TINY, g_malloc_data.datas[TINY],
-				g_malloc_data.datas_end[TINY], fd);
+				g_malloc_data.datas[TINY] + g_malloc_data.datas_len[TINY], fd);
 	if (g_malloc_data.datas[SMALL] != NULL)
 		print_tiny_small(SMALL, g_malloc_data.datas[SMALL],
-				g_malloc_data.datas_end[SMALL], fd);
+			g_malloc_data.datas[SMALL] + g_malloc_data.datas_len[SMALL], fd);
 	if (g_malloc_data.meta_large != NULL)
 		print_large(fd);
 }

@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/27 14:15:01 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:22:47 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/21 18:48:07 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,29 @@
 
 extern t_metadata		g_malloc_data;
 
-static t_blocksize		get_blk_size(size_t size)
+static t_blocksize		get_blk_size(size_t *size)
 {
 	PROFILE_BASIC;
-	if (size <= TINY_MAX_SIZE)
+	if (*size <= TINY_MAX_SIZE)
+	{
+		if (*size < TINY_ATOMIC)
+			*size = TINY_ATOMIC;
+		else if (*size % TINY_ATOMIC != 0)
+			*size = TINY_ATOMIC * (*size / TINY_ATOMIC) + TINY_ATOMIC;
 		return (TINY);
-	else if (size <= SMALL_MAX_SIZE)
+	}
+	else if (*size <= SMALL_MAX_SIZE)
+	{
+		if (*size < SMALL_ATOMIC)
+			*size = SMALL_ATOMIC;
+		else if (*size % SMALL_ATOMIC != 0)
+			*size = SMALL_ATOMIC * (*size / SMALL_ATOMIC) + SMALL_ATOMIC;
 		return (SMALL);
+	}
 	else
+	{
 		return (LARGE);
+	}
 }
 
 static void				*realloc_shrink(void *meta_ptr, size_t old_size,
@@ -36,7 +50,7 @@ static void				*realloc_shrink(void *meta_ptr, size_t old_size,
 
 	PROFILE_BASIC;
 	old_free_size = *(int32_t*)(meta_ptr + old_size + 1);
-	if (get_blk_size(new_size) == get_blk_size(old_size))
+	if (get_blk_size(&new_size) == get_blk_size(&old_size))
 	{
 		*(int32_t*)meta_ptr = new_size;
 		*(int32_t*)(meta_ptr + new_size + 1) = old_free_size +
@@ -93,7 +107,7 @@ static void				*realloc_enlarge(void *meta_ptr, size_t old_size,
 	if (old_size > SMALL_MAX_SIZE)
 		return (enlarge_l2l(meta_ptr, old_size, new_size));
 	next_zone_size = *(int32_t*)(meta_ptr + old_size + sizeof(int32_t));
-	if (get_blk_size(new_size) == get_blk_size(old_size)
+	if (get_blk_size(&new_size) == get_blk_size(&old_size)
 			&& next_zone_size < 0 && -1 * next_zone_size + old_size > new_size)
 	{
 		*(int32_t*)(meta_ptr) = new_size;
