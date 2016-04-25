@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
-/*   Updated: 2016/04/21 18:49:11 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/25 15:11:59 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,7 @@ void			*header_change_segment(t_header **head, t_direction dir,
 void			check_header(t_header *head, const char *origin);
 void			destroy_segment(t_header *head, t_blocksize blk_size);
 size_t			roundup_large_size(size_t size);
+int				check_adress_validity(void *ptr, t_blocksize blk_size);
 void			dump_alloc_mem(t_blocksize blk_size);
 void			display_segments(t_blocksize blk_size);
 int				record_allocations_init();

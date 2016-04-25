@@ -6,7 +6,7 @@
 /*   By: ndatin <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 12:02:33 by marene            #+#    #+#             */
-/*   Updated: 2016/04/21 18:35:13 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/25 16:12:53 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ void				free(void *usr_ptr)
 {
 	void			*m_ptr;
 	int				to_unmap;
-	int				alloced;
 	t_blocksize		blk_size;
 	t_header		*head;
 
@@ -88,17 +87,18 @@ void				free(void *usr_ptr)
 	head = NULL;
 	m_ptr = usr_ptr - sizeof(int32_t);
 	blk_size = get_blk_size(m_ptr, &head);
+	if (check_adress_validity(m_ptr, blk_size) == M_NOK)
+		return ;
 	if (blk_size < LARGE && usr_ptr != NULL && m_ptr != NULL
 			&& *(int32_t*)m_ptr > 0)
 	{
-		if (*(int32_t*)m_ptr > 0)
-			*(int32_t*)m_ptr *= -1;
+		*(int32_t*)m_ptr *= ((*(int32_t*)m_ptr > 0) ? -1 : 1);
 		check_for_destroy(blk_size, m_ptr, head);
 	}
 	else if (usr_ptr != NULL && m_ptr != NULL && clear_meta(m_ptr) == M_OK)
 	{
-		alloced = *(int32_t*)m_ptr;
-		to_unmap = alloced / getpagesize() + (alloced % getpagesize() > 0);
+		to_unmap = *(int32_t*)m_ptr / getpagesize()
+			+ (*(int32_t*)m_ptr % getpagesize() > 0);
 		munmap(m_ptr, to_unmap * getpagesize());
 	}
 	CALL_RECORD(NULL);

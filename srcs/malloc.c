@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:18:11 by marene            #+#    #+#             */
-/*   Updated: 2016/04/21 18:46:28 by marene           ###   ########.fr       */
+/*   Updated: 2016/04/25 15:26:52 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,18 +81,10 @@ static t_blocksize	get_blk_size(size_t *size)
 	PROFILE_BASIC;
 	if (*size <= TINY_MAX_SIZE)
 	{
-		if (*size < TINY_ATOMIC)
-			*size = TINY_ATOMIC;
-		else if (*size % TINY_ATOMIC != 0)
-			*size = TINY_ATOMIC * (*size / TINY_ATOMIC) + TINY_ATOMIC;
 		return (TINY);
 	}
 	else if (*size <= SMALL_MAX_SIZE)
 	{
-		if (*size < SMALL_ATOMIC)
-			*size = SMALL_ATOMIC;
-		else if (*size % SMALL_ATOMIC != 0)
-			*size = SMALL_ATOMIC * (*size / SMALL_ATOMIC) + SMALL_ATOMIC;
 		return (SMALL);
 	}
 	else
