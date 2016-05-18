@@ -6,7 +6,7 @@
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/05 17:17:24 by marene            #+#    #+#             */
-/*   Updated: 2016/04/21 17:21:56 by marene           ###   ########.fr       */
+/*   Updated: 2016/05/18 17:08:31 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void				*extend_blk(t_blocksize blk_size, t_header *head)
 
 	PROFILE_BASIC;
 	pagesize = getpagesize();
-	ft_putendl("extend_blk");
 	size = (blk_size == TINY) ? TINY_PAGES_NB * pagesize
 		: SMALL_PAGES_NB * pagesize;
 	new_data = mmap(0, size, MMAP_PROT, MMAP_FLAGS, -1, 0);
