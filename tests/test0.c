@@ -1,18 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   test0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/12 18:24:02 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:24:15 by marene           ###   ########.fr       */
+/*   Created: 2016/05/17 17:17:34 by marene            #+#    #+#             */
+/*   Updated: 2016/05/17 17:20:34 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include <stdlib.h>
+#include <unistd.h>
 
-void			show_alloc_mem(void)
+int		main(void)
 {
-	display_allocs(1);
+	int		i;
+	void	*ptr;
+
+	i = 0;
+	ptr = NULL;
+	write(1, "test0\n", 6);
+	while (i < 1024)
+	{
+		++i;
+	}
+	return (0);
 }

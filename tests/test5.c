@@ -1,18 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   test5.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/12 18:24:02 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:24:15 by marene           ###   ########.fr       */
+/*   Created: 2016/05/17 17:18:54 by marene            #+#    #+#             */
+/*   Updated: 2016/05/18 15:48:44 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include "../includes/ft_malloc.h"
+#include <string.h>
 
-void			show_alloc_mem(void)
+int		main(void)
 {
-	display_allocs(1);
+	char	*foo;
+
+	foo = malloc(42);
+	strcpy(foo, "bonjour");
+	malloc(1024);
+	malloc(1024 * 32);
+	malloc(1024 * 1024);
+	malloc(1024 * 1024 * 16);
+	malloc(1024 * 1024 * 128);
+	dump_alloc_mem(TINY);
+	return (0);
 }

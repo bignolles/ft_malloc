@@ -1,18 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   ft_strnequ.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: marene <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/12 18:24:02 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:24:15 by marene           ###   ########.fr       */
+/*   Created: 2013/11/21 16:27:24 by marene            #+#    #+#             */
+/*   Updated: 2014/10/14 12:39:46 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include <libft.h>
 
-void			show_alloc_mem(void)
+int	ft_strnequ(char const *s1, char const *s2, size_t n)
 {
-	display_allocs(1);
+	size_t	i;
+
+	i = 0;
+	while (i < n && s1[i] && s2[i])
+	{
+		if (s1[i] != s2[i])
+			return (0);
+		i++;
+	}
+	if (i < n && s1[i] != s2[i])
+		return (0);
+	return (1);
 }

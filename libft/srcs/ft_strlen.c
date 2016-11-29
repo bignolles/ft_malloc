@@ -1,18 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: marene <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/12 18:24:02 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:24:15 by marene           ###   ########.fr       */
+/*   Created: 2013/11/19 14:36:56 by marene            #+#    #+#             */
+/*   Updated: 2014/10/31 11:06:11 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include <libft.h>
 
-void			show_alloc_mem(void)
+size_t	ft_strlen(const char *s)
 {
-	display_allocs(1);
+	int	len;
+
+	len = 0;
+	if (s)
+	{
+		while (s[len] != '\0')
+			len++;
+	}
+	return (len);
 }

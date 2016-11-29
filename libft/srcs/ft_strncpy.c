@@ -1,18 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   ft_strncpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: marene <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/12 18:24:02 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:24:15 by marene           ###   ########.fr       */
+/*   Created: 2013/11/19 15:54:12 by marene            #+#    #+#             */
+/*   Updated: 2014/10/14 12:37:08 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include <string.h>
+#include <libft.h>
 
-void			show_alloc_mem(void)
+char	*ft_strncpy(char *s1, const char *s2, size_t n)
 {
-	display_allocs(1);
+	size_t	i;
+
+	i = 0;
+	while (i < n && s2[i])
+	{
+		s1[i] = s2[i];
+		i++;
+	}
+	while (i < n)
+	{
+		s1[i] = '\0';
+		i++;
+	}
+	return (s1);
 }

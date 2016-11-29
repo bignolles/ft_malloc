@@ -1,18 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   ft_put_color.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: marene <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/12 18:24:02 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:24:15 by marene           ###   ########.fr       */
+/*   Created: 2013/11/23 16:04:18 by marene            #+#    #+#             */
+/*   Updated: 2014/10/26 22:33:51 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include <unistd.h>
+#include <libft.h>
+#include <colors.h>
 
-void			show_alloc_mem(void)
+void	ft_put_color(const char *str, char *color)
 {
-	display_allocs(1);
+	ft_putstr(color);
+	ft_putstr(str);
+	ft_putstr(DEFAULT_COLOR);
 }

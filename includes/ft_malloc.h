@@ -1,8 +1,54 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_malloc.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/02/11 18:48:27 by marene            #+#    #+#             */
+/*   Updated: 2016/04/25 15:11:59 by marene           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FT_MALLOC_H
 # define FT_MALLOC_H
 
 # include <stdint.h>
 # include <stdlib.h>
+
+# define M_MAGIC			0xdeadbeefb00b1e
+
+# define HEADER_CONTROL_STRICT
+# ifdef HEADER_CONTROL_STRICT
+#  define HEADER_CONTROL(x, y)	check_header(x, y)
+# else
+#  define HEADER_CONTROL(x, y)	(void)(x);(void)(y)
+# endif
+
+# define RICH_OUTPUT
+# ifdef RICH_OUTPUT
+#  define ORIGIN			__func__
+# else
+#  define ORIGIN			""
+# endif
+
+/*
+** # define RECORD_FILE_NAME	"./libft_malloc.record"
+*/
+# ifdef RECORD_FILE_NAME
+#  define CALL_RECORD(x) record_allocations(x)
+# else
+#  define CALL_RECORD(x) (void)x
+# endif
+
+/*
+** # define M_PROFILE_BASIC
+*/
+# ifdef M_PROFILE_BASIC
+#  define PROFILE_BASIC	ft_putendl(__func__)
+# else
+#  define PROFILE_BASIC
+# endif
 
 # define M_OK				0x00
 # define M_NOK				0x01
@@ -10,74 +56,117 @@
 # define MMAP_PROT			PROT_READ | PROT_WRITE
 # define MMAP_FLAGS			MAP_ANON | MAP_PRIVATE
 
-# define TINY_PAGES_NB		25//PREVIOUSLY 260 -> PLZ RESTORE AFTER TESTS //512 NOTA: 311 pages -> valeur min pour que le bug n'apparaisse pas. fuuuuu
-# define SMALL_PAGES_NB		257 //PREVIOUSLY 4096 SMALL_MAX_SIZE 4 * plus grnd que TINY_MAX_SIZE, donc 4 * plus de pages?
+# define TINY_PAGES_NB		13
+# define SMALL_PAGES_NB		26
+# define LARGE_PAGES_NB		4
 
 # define TINY_ATOMIC		16
-# define SMALL_ATOMIC		997 // <- Bidouiller le nombre de pages / les atomic pour que ces derniers soient des puissance de deux (je pense que ce sera plus propre)
+# define SMALL_ATOMIC		64
 
-# define TINY_MAX_SIZE		994 // PREVIOUSLY 1024 -> RESTORE AFTER TEST PLZ
-# define SMALL_MAX_SIZE		4096
+# define TINY_MAX_SIZE		512
+# define SMALL_MAX_SIZE		1024
 
-/**
- * \struct metadata_s
- * \brief Structure permettant le stockage des metadonnees relatives aux blocs de
- *        memoire ayant ete malloc \n
- *
- *        void* data_tiny -> Pointeur sur le debut de la premiere page de la region
- *        "tiny" \n
- *        void* data_small -> Idem, pour la region small (duh) \n
- *        void* meta_tiny -> pointeur sur le debut de la (les) page(s) de metadonnees
- *        relatives a la region "tiny" \n
- *        void* meta_small -> idem que meta_tiny, pour la region "small" \n
- *        void* meta_large -> C'est bon, t'as compris maintenant?
- */
+# define CLI_DEFAULT		"\e[39m"
+# define CLI_RED			"\e[31m"
+# define CLI_BLUE			"\e[34m"
+# define CLI_GREEN			"\e[32m"
 
-// TODO: Ajouter une variable global metadata_t malloc_meta_g dans le fichier qui contiendra la definition de la fonction malloc(size_t size)
+# define DUMP_INC			(int)(2 * sizeof(void*))
 
-typedef enum	blocksize_s
+typedef enum	e_blocksize
 {
 	TINY = 0,
 	SMALL,
 	LARGE,
-}				blocksize_t;
+}				t_blocksize;
 
-typedef struct	metadata_s
+/*
+** struct s_metadata
+** {
+** void			*data_tiny;			->  Debut reel de la zone tiny
+**                                      (adresse retournee par mmap)
+** void			*data_tiny_end;		->  fin reelle de la zone tiny
+** void			*data_small;		->  ditto
+** void			*data_small_end;	->  ditto
+** void			*datas[2];			->  Debut effectif des  zones tiny et small
+**                                      (apres le header)
+** void			*datas_end[2];		->  Fin effective des zones tiny et small
+**                                      (correspondent a data_*_end dans
+**                                       l'implementation actuelle)
+** size_t		datas_len[2];		->  Longueurs effectives des zones tiny et
+**                                      small (taille du mmap-sizeof(t_header))
+** void			**meta_large;		->  recap de tous les sets de pages large
+** int			meta_large_len;
+** int32_t		max_size[2];
+** int			record_fd;
+** }
+*/
+
+typedef struct	s_metadata
 {
-	void*		data_tiny;
-	void*		data_tiny_end;
-	void*		data_small;
-	void*		data_small_end;
-	void*		datas[2];
-	void*		datas_end[2];
-	size_t		datas_len[2];
-	void**		meta_tiny;
-	void**		meta_tiny_end;
-	void**		meta_small;
-	void**		meta_small_end;
-	void**		meta_large; // On a meme pas besoin de tenir des metadata sur les larges /!
-	void		**meta_pages_start[2];
-//	void		*meta_pages_end[2];
-	size_t		meta_len[2];
-}				metadata_t; // <- globale
+	void		*data_tiny;
+	void		*data_tiny_end;
+	void		*data_small;
+	void		*data_small_end;
+	void		*datas[2];
+	int32_t		datas_atomic[2];
+	int32_t		datas_len[2];
+	void		**meta_large;
+	int			meta_large_len;
+	int32_t		max_size[2];
+	int			record_fd;
+	int			init[3];
+}				t_metadata;
 
-metadata_t		malloc_data_g;
+t_metadata		g_malloc_data;
 
-int				pages_init(blocksize_t blk_size);	// <- initialise metadata_t
-int				create_meta(void);		// |
-int				create_data(void);		// |
-int				metadata_init(blocksize_t blk_size);
-size_t			get_metapagesize(blocksize_t size);
-size_t			get_metapagelen(blocksize_t size);
-void*			metadata_retrieve(void* usr_ptr, blocksize_t* blk_size);
-int				metadata_add(void* usr_ptr, blocksize_t blk_size);
-int				metadata_remove(void* usr_ptr, blocksize_t blk_size);
-void			show_alloc_mem(void);
-int				ft_putnbr_recursive(int32_t nb, int mult);
+/*
+** struct s_header
+** {
+** unsigned long int	magic;	-> M_MAGIC ^ adresse du header
+** void				*prev;		-> Pointeur sur le prochain groupe de pages du
+**                                 bloc (zone effective, apres header)
+** void				*next;		-> Ditto pour la zone precedante
+** }
+*/
+
+typedef struct	s_header
+{
+	unsigned long int	magic;
+	void				*prev;
+	void				*next;
+}				t_header;
+
+typedef enum	e_direction
+{
+	SEG_NONE,
+	SEG_PREV,
+	SEG_NEXT,
+}				t_direction;
+
+int				pages_init(t_blocksize blk_size);
+int				create_meta(void);
+int				create_data(void);
+int				metadata_init(t_blocksize blk_size);
+size_t			get_metapagesize(t_blocksize size);
+size_t			get_metapagelen(t_blocksize size);
+void			*metadata_retrieve(void *usr_ptr, t_blocksize *blk_size);
+int				metadata_add(void *usr_ptr, t_blocksize blk_size);
+int				metadata_remove(void *usr_ptr, t_blocksize blk_size);
 int				get_mult(int32_t nb);
-void			putaddr(unsigned long int n);
-
-void*	ft_malloc(size_t size);
-void	ft_free(void* ptr);
+void			show_alloc_mem(void);
+void			display_allocs(int fd);
+int32_t			defragment_memory(t_blocksize blk_size, void *meta_ptr);
+void			*find_allocable_segment(size_t size, t_blocksize blk_size);
+void			*header_change_segment(t_header **head, t_direction dir,
+				const char *origin);
+void			check_header(t_header *head, const char *origin);
+void			destroy_segment(t_header *head, t_blocksize blk_size);
+size_t			roundup_large_size(size_t size);
+int				check_adress_validity(void *ptr, t_blocksize blk_size);
+void			dump_alloc_mem(t_blocksize blk_size);
+void			display_segments(t_blocksize blk_size);
+int				record_allocations_init();
+void			record_allocations();
 
 #endif

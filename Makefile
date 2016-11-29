@@ -10,14 +10,22 @@ OBJ_DIR =		./obj/
 LIBFT_DIR =		./libft/
 UNIT_DIR =		./unit_tests/
 LIBFT_NAME =	libft.a
-SRCS =			free.c\
+SRCS =			defragment_memory.c\
+				dump_alloc_mem.c\
+				free.c\
 				init.c\
 				malloc.c\
-				show_alloc_mem.c
+				realloc.c\
+				record.c\
+				show_alloc_mem.c\
+				find_allocable_segment.c\
+				header_change_segment.c\
+				display_allocs.c\
+				destroy_segment.c\
+				display_segments.c\
+				roundup_large_size.c\
+				check_adress_validity.c
 OBJ =			$(SRCS:.c=.o)
-UNIT_SRCS =		main.c\
-				unit_malloc.c
-UNIT_OBJS =		$(UNIT_SRCS:.c=.o)
 LIBFT =			$(LIBFT_DIR)libft.a
 CC =			clang
 CFLAGS =		-Wall -Wextra -Werror -g -I $(INCLUDES_DIR) -I $(LIBFT_DIR)includes -o
@@ -38,11 +46,6 @@ $(NAME): $(addprefix $(OBJ_DIR), $(OBJ))
 
 $(OBJ_DIR)%.o: $(SRCS_DIR)%.c
 	$(CC) $(CFLAGS) $@ -c $<
-	
-unit: $(UNIT_NAME)
-
-$(UNIT_NAME): 
-	$(CC) $(CFLAGS) $@ -L $(LIBFT_DIR) -lft $(LINKNAME) $(addprefix $(UNIT_DIR), $(UNIT_SRCS))
 
 clean:
 	rm -rf $(OBJ_DIR)
@@ -52,5 +55,8 @@ fclean: clean
 	rm -rf $(LINKNAME)
 
 re: fclean all
+
+norme:
+	norminette $(addprefix $(SRCS_DIR), $(SRCS)) $(INCLUDES_DIR)/ft_malloc.h
 
 .PHONY: all clean fclean re unit $(UNIT_NAME)

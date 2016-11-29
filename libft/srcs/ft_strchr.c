@@ -1,18 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: marene <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/12 18:24:02 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:24:15 by marene           ###   ########.fr       */
+/*   Created: 2013/11/20 11:40:21 by marene            #+#    #+#             */
+/*   Updated: 2014/10/14 12:36:25 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include <stdlib.h>
+#include <libft.h>
 
-void			show_alloc_mem(void)
+char	*ft_strchr(const char *s, int c)
 {
-	display_allocs(1);
+	int	i;
+
+	i = 0;
+	while (s[i] && s[i] != c)
+		i++;
+	if (c == '\0' && !s[i])
+		return ((char*)&s[i]);
+	else if (s[i] == c)
+		return ((char*)&s[i]);
+	else
+		return (NULL);
 }

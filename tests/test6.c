@@ -1,18 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   test6.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/12 18:24:02 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:24:15 by marene           ###   ########.fr       */
+/*   Created: 2016/05/17 17:19:06 by marene            #+#    #+#             */
+/*   Updated: 2016/05/18 15:49:12 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include "../includes/ft_malloc.h"
+#include <stdio.h>
 
-void			show_alloc_mem(void)
+int		main(void)
 {
-	display_allocs(1);
+	printf("sizeof(t_header) : %lu\n", sizeof(t_header));
+	printf("sizeof(int32_t) : %lu\n", sizeof(int32_t));
+	return (0);
 }

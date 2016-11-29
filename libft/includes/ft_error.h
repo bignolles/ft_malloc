@@ -1,18 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   ft_error.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: marene <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/12 18:24:02 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:24:15 by marene           ###   ########.fr       */
+/*   Created: 2014/10/14 14:23:32 by marene            #+#    #+#             */
+/*   Updated: 2015/05/07 09:21:06 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#ifndef FT_ERROR_H
+# define FT_ERROR_H
 
-void			show_alloc_mem(void)
-{
-	display_allocs(1);
-}
+# include <stdlib.h>
+
+int			tryint(int err, int res, char *error);
+void		*tryptr(void *err, void *res, char *error);
+
+#endif

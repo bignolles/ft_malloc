@@ -1,18 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   ft_lstadd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marene <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: marene <marene@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/12 18:24:02 by marene            #+#    #+#             */
-/*   Updated: 2016/04/12 18:24:15 by marene           ###   ########.fr       */
+/*   Created: 2013/11/29 11:08:56 by marene            #+#    #+#             */
+/*   Updated: 2014/10/14 12:35:09 by marene           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_malloc.h"
+#include <stdlib.h>
+#include <libft.h>
 
-void			show_alloc_mem(void)
+void	ft_lstadd(t_list **alst, t_list *new)
 {
-	display_allocs(1);
+	if (new && alst && *alst)
+	{
+		new->next = *alst;
+		*alst = new;
+	}
 }
